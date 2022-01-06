@@ -1,0 +1,12 @@
+{
+  "_template": "gh:cjolowicz/cookiecutter-hypermodern-python",
+  "author": "byeonhyeok",
+  "development_status": "Development Status :: 1 - Planning",
+  "email": "bhrevol@gmail.com",
+  "friendly_name": "Vorze Script",
+  "github_user": "bhrevol",
+  "license": "MIT",
+  "package_name": "vorze_script",
+  "project_name": "vorze-script",
+  "version": "0.0.0"
+}
