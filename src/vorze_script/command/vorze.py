@@ -9,7 +9,7 @@ from typing import Tuple
 from buttplug.core import RotateCmd
 from buttplug.core import RotateSubcommand
 
-from .command import BaseCommand
+from .base import BaseCommand
 
 # from buttplug.core import LinearCmd
 # from buttplug.core import LinearSubcommand

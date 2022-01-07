@@ -3,7 +3,7 @@ from typing import Tuple
 
 import pytest
 
-from vorze_script.vorze import VorzeRotateCommand
+from vorze_script.command import VorzeRotateCommand
 
 
 @pytest.mark.parametrize(
