@@ -115,7 +115,7 @@ class RotateCommand(BaseCommand):
         )
 
     @classmethod
-    def from_buttplug(cls, msg: LinearCmd) -> "LinearCommand":
+    def from_buttplug(cls, msg: RotateCmd) -> "RotateCommand":
         """Construct command from a Buttplug message."""
         cmd = msg.rotations[0]
         return cls(cmd.speed, cmd.clockwise)

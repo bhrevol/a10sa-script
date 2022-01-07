@@ -7,9 +7,9 @@ from .vorze import VorzeRotateCommand
 
 
 __all__ = [
-    BaseCommand,
-    LinearCommand,
-    RotateCommand,
-    VibrateCommand,
-    VorzeRotateCommand,
+    "BaseCommand",
+    "LinearCommand",
+    "RotateCommand",
+    "VibrateCommand",
+    "VorzeRotateCommand",
 ]

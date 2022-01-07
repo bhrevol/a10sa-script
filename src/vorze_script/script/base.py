@@ -4,6 +4,8 @@ from typing import Iterable
 from typing import Iterator
 from typing import MutableSequence
 from typing import Optional
+from typing import overload
+from typing import Union
 
 from sortedcontainers import SortedList
 
@@ -37,13 +39,27 @@ class BaseScript(MutableSequence[ScriptCommand]):
         """
         self.commands = SortedList(commands, key=lambda cmd: cmd.offset)
 
+    @overload
     def __getitem__(self, key: int) -> ScriptCommand:
+        ...
+
+    @overload
+    def __getitem__(self, key: slice) -> MutableSequence[ScriptCommand]:
+        ...
+
+    def __getitem__(
+        self, key: Union[int, slice]
+    ) -> Union[ScriptCommand, MutableSequence[ScriptCommand]]:
         return self.commands[key]
 
-    def __setitem__(self, key: int, value: ScriptCommand) -> None:
+    def __setitem__(
+        self,
+        key: Union[int, slice],
+        value: Union[ScriptCommand, Iterable[ScriptCommand]],
+    ) -> None:
         raise NotImplementedError
 
-    def __delitem__(self, key: int) -> None:
+    def __delitem__(self, key: Union[int, slice]) -> None:
         del self.commands[key]
 
     def __len__(self) -> int:
@@ -55,7 +71,11 @@ class BaseScript(MutableSequence[ScriptCommand]):
     def __reversed__(self) -> Iterator[ScriptCommand]:
         return reversed(self.commands)
 
-    def insert(self, command: ScriptCommand):
+    def insert(self, index: int, command: ScriptCommand) -> None:
+        """Raise not-implemented error (use add())."""
+        raise NotImplementedError
+
+    def add(self, command: Union[ScriptCommand]) -> None:
         """Add a command to this script.
 
         Commands will be inserted in the proper location based on time offset.

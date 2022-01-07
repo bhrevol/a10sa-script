@@ -1,5 +1,5 @@
 """Test cases for script module."""
-from typing import Iterable
+from typing import Sequence
 
 import pytest
 
@@ -9,16 +9,16 @@ from vorze_script.script import ScriptCommand
 
 
 class _NullCommand(BaseCommand):  # pragma: no cover
-    def to_buttplug(self, *args, **kwargs):
+    def to_buttplug(self, *args, **kwargs):  # type: ignore
         raise NotImplementedError
 
     @classmethod
-    def from_buttplug(cls, *args, **kwargs):
+    def from_buttplug(cls, *args, **kwargs):  # type: ignore
         raise NotImplementedError
 
 
 @pytest.mark.parametrize("offsets", [(0, 50, 100), (50, 0, 100), (100, 50, 0)])
-def test_script_generic(offsets: Iterable[int]) -> None:
+def test_script_generic(offsets: Sequence[int]) -> None:
     """Test generic MutableSequence behavior."""
     script = BaseScript([ScriptCommand(offset, _NullCommand()) for offset in offsets])
     assert len(script) == len(offsets)
@@ -37,17 +37,17 @@ def test_script_disabled() -> None:
     with pytest.raises(NotImplementedError):
         script[0] = ScriptCommand(0, _NullCommand())
     with pytest.raises(NotImplementedError):
-        script[0] = ScriptCommand(0, _NullCommand())
+        script.insert(0, ScriptCommand(0, _NullCommand()))
     with pytest.raises(NotImplementedError):
         script.reverse()
 
 
 @pytest.mark.parametrize("new", [25, 50, 125])
-def test_script_insert(new: int) -> None:
+def test_script_add(new: int) -> None:
     """Test command insertion."""
     offsets = [0, 50, 100]
     script = BaseScript([ScriptCommand(offset, _NullCommand()) for offset in offsets])
-    script.insert(ScriptCommand(new, _NullCommand()))
+    script.add(ScriptCommand(new, _NullCommand()))
     assert [cmd.offset for cmd in script] == sorted(offsets + [new])
 
 
