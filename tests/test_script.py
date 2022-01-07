@@ -1,0 +1,59 @@
+"""Test cases for script module."""
+from typing import Iterable
+
+import pytest
+
+from vorze_script.command import BaseCommand
+from vorze_script.script import BaseScript
+from vorze_script.script import ScriptCommand
+
+
+class _NullCommand(BaseCommand):  # pragma: no cover
+    def to_buttplug(self, *args, **kwargs):
+        raise NotImplementedError
+
+    @classmethod
+    def from_buttplug(cls, *args, **kwargs):
+        raise NotImplementedError
+
+
+@pytest.mark.parametrize("offsets", [(0, 50, 100), (50, 0, 100), (100, 50, 0)])
+def test_script_generic(offsets: Iterable[int]) -> None:
+    """Test generic MutableSequence behavior."""
+    script = BaseScript([ScriptCommand(offset, _NullCommand()) for offset in offsets])
+    assert len(script) == len(offsets)
+    expected = sorted(offsets)
+    assert [cmd.offset for cmd in script] == expected
+    assert all(script[i].offset == expected[i] for i in range(len(offsets)))
+    assert [cmd.offset for cmd in reversed(script)] == list(reversed(expected))
+    del script[0]
+    del expected[0]
+    assert [cmd.offset for cmd in script] == expected
+
+
+def test_script_disabled() -> None:
+    """Test disabled MutableSequence functionality."""
+    script = BaseScript([ScriptCommand(0, _NullCommand())])
+    with pytest.raises(NotImplementedError):
+        script[0] = ScriptCommand(0, _NullCommand())
+    with pytest.raises(NotImplementedError):
+        script[0] = ScriptCommand(0, _NullCommand())
+    with pytest.raises(NotImplementedError):
+        script.reverse()
+
+
+@pytest.mark.parametrize("new", [25, 50, 125])
+def test_script_insert(new: int) -> None:
+    """Test command insertion."""
+    offsets = [0, 50, 100]
+    script = BaseScript([ScriptCommand(offset, _NullCommand()) for offset in offsets])
+    script.insert(ScriptCommand(new, _NullCommand()))
+    assert [cmd.offset for cmd in script] == sorted(offsets + [new])
+
+
+@pytest.mark.parametrize("start", [25, 50])
+def test_script_seek(start: int) -> None:
+    """Test seek iterator."""
+    offsets = [0, 50, 100]
+    script = BaseScript([ScriptCommand(offset, _NullCommand()) for offset in offsets])
+    assert [cmd.offset for cmd in script.seek_iter(start)] == offsets[1:]

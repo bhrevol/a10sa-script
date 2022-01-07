@@ -19,6 +19,7 @@ Changelog = "https://github.com/bhrevol/vorze-script/releases"
 python = "^3.8"
 click = "^8.0.1"
 buttplug = "^0.2.1"
+sortedcontainers = "^2.4.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
