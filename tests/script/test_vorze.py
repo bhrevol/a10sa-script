@@ -1,16 +1,37 @@
 """Test cases for Vorze scripts."""
 import io
 from pathlib import Path
+from typing import List
+from typing import Type
 
 import pytest
 
 from a10sa_script.command.vorze import VorzeRotateCommand
+from a10sa_script.command.vorze import VorzeVibrateCommand
 from a10sa_script.exceptions import ParseError
+from a10sa_script.script.vorze import _T
 from a10sa_script.script.vorze import VorzeRotateScript
+from a10sa_script.script.vorze import VorzeScript
 from a10sa_script.script.vorze import VorzeScriptCommand
+from a10sa_script.script.vorze import VorzeVibrateScript
 
 
-TEST_CSV = """1870,1,57
+VIBRATE_CSV = """1870,57
+1879,41
+1888,0
+1997,61
+2005,0
+"""
+
+VIBRATE_COMMANDS = [
+    VorzeScriptCommand(187000, VorzeVibrateCommand(57)),
+    VorzeScriptCommand(187900, VorzeVibrateCommand(41)),
+    VorzeScriptCommand(188800, VorzeVibrateCommand(0)),
+    VorzeScriptCommand(199700, VorzeVibrateCommand(61)),
+    VorzeScriptCommand(200500, VorzeVibrateCommand(0)),
+]
+
+ROTATE_CSV = """1870,1,57
 1879,0,41
 1888,0,0
 1997,1,61
@@ -18,7 +39,7 @@ TEST_CSV = """1870,1,57
 2005,0,0
 """
 
-TEST_COMMANDS = [
+ROTATE_COMMANDS = [
     VorzeScriptCommand(187000, VorzeRotateCommand(57, False)),
     VorzeScriptCommand(187900, VorzeRotateCommand(41, True)),
     VorzeScriptCommand(188800, VorzeRotateCommand(0, True)),
@@ -28,27 +49,49 @@ TEST_COMMANDS = [
 ]
 
 
-def test_rotate_load() -> None:
-    """Test loading rotate script from CSV."""
-    orig = io.BytesIO(TEST_CSV.encode("ascii"))
+@pytest.mark.parametrize(
+    "script_cls, csv, commands",
+    [
+        (VorzeVibrateScript, VIBRATE_CSV, VIBRATE_COMMANDS),
+        (VorzeRotateScript, ROTATE_CSV, ROTATE_COMMANDS),
+    ],
+)
+def test_load(
+    script_cls: Type[VorzeScript[_T]], csv: str, commands: List[VorzeScriptCommand[_T]]
+) -> None:
+    """Test loading script from CSV."""
+    orig = io.BytesIO(csv.encode("ascii"))
     orig.seek(0)
-    script = VorzeRotateScript.load(orig)
-    expected = VorzeRotateScript(TEST_COMMANDS)
+    script = script_cls.load(orig)
+    expected = script_cls(commands)
     assert script == expected
 
 
-def test_rotate_dump(tmp_path: Path) -> None:
-    """Test dumping rotate script to CSV."""
-    script = VorzeRotateScript(TEST_COMMANDS)
+@pytest.mark.parametrize(
+    "script_cls, csv, commands",
+    [
+        (VorzeVibrateScript, VIBRATE_CSV, VIBRATE_COMMANDS),
+        (VorzeRotateScript, ROTATE_CSV, ROTATE_COMMANDS),
+    ],
+)
+def test_dump(
+    script_cls: Type[VorzeScript[_T]],
+    csv: str,
+    commands: List[VorzeScriptCommand[_T]],
+    tmp_path: Path,
+) -> None:
+    """Test dumping script to CSV."""
+    script = script_cls(commands)
     new = tmp_path / "new.csv"
     with open(new, "wb") as f:
         script.dump(f)
-    assert new.read_text() == TEST_CSV
+    assert new.read_text() == csv
 
 
-def test_rotate_load_invalid() -> None:
+@pytest.mark.parametrize("script_cls", [VorzeVibrateScript, VorzeRotateScript])
+def test_load_invalid(script_cls: Type[VorzeScript[_T]]) -> None:
     """Test invalid CSV parsing."""
-    orig = io.BytesIO(b"1234")
+    orig = io.BytesIO(b"\x00")
     with pytest.raises(ParseError):
         orig.seek(0)
-        VorzeRotateScript.load(orig)
+        script_cls.load(orig)
