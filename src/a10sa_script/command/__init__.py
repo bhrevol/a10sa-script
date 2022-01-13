@@ -7,6 +7,7 @@ from .base import LinearCommand
 from .base import RotateCommand
 from .base import VibrateCommand
 from .vorze import VorzeRotateCommand
+from .vorze import VorzeVibrateCommand
 
 
 __all__ = [
@@ -18,4 +19,5 @@ __all__ = [
     "RotateCommand",
     "VibrateCommand",
     "VorzeRotateCommand",
+    "VorzeVibrateCommand",
 ]
