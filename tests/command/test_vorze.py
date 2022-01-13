@@ -2,6 +2,7 @@
 from typing import Tuple
 
 import pytest
+from buttplug.core import RotateSubcommand
 
 from a10sa_script.command import VorzeRotateCommand
 
@@ -21,6 +22,11 @@ def test_rotate_buttplug(vorze: VorzeRotateCommand, buttplug_speed: float) -> No
     """Test rotate Buttplug roundtrip."""
     rotation = vorze.rotations[0]
     assert rotation == (buttplug_speed, vorze.clockwise)
+    with pytest.raises(ValueError):
+        VorzeRotateCommand.from_rotations([])
+    assert vorze == VorzeRotateCommand.from_rotations(
+        [RotateSubcommand(0, speed, clockwise) for speed, clockwise in vorze.rotations]
+    )
     assert vorze == VorzeRotateCommand.from_rotations(vorze.rotations)
 
 
