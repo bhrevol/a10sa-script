@@ -11,6 +11,7 @@ from typing_extensions import TypeAlias
 
 from ..command.vorze import BaseVorzeCommand
 from ..command.vorze import VorzeRotateCommand
+from ..command.vorze import VorzeVibrateCommand
 from ..exceptions import ParseError
 from .base import ScriptCommand
 from .base import SerializableScript
@@ -93,6 +94,19 @@ class VorzeScript(SerializableScript[_T]):
     def offset_to_ms(cls, offset_csv: int) -> int:
         """Convert Vorze CSV time offsets to millisecond offsets."""
         return offset_csv * cls.OFFSET_DENOM
+
+
+class VorzeVibrateScript(VorzeScript[VorzeVibrateCommand]):
+    """Vorze vibration commands script.
+
+    Note:
+        Script format for Vorze OnaRhythm devices (i.e Rocket+1D).
+    """
+
+    @classmethod
+    def _command_cls(cls) -> Type[VorzeVibrateCommand]:
+        """Return command class for this script."""
+        return VorzeVibrateCommand
 
 
 class VorzeRotateScript(VorzeScript[VorzeRotateCommand]):
