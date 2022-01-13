@@ -19,11 +19,9 @@ from a10sa_script.command import VorzeRotateCommand
 )
 def test_rotate_buttplug(vorze: VorzeRotateCommand, buttplug_speed: float) -> None:
     """Test rotate Buttplug roundtrip."""
-    buttplug = vorze.to_buttplug()
-    cmd = buttplug.rotations[0]
-    assert cmd.speed == buttplug_speed
-    assert cmd.clockwise == vorze.clockwise
-    assert vorze == VorzeRotateCommand.from_buttplug(buttplug)
+    rotation = vorze.rotations[0]
+    assert rotation == (buttplug_speed, vorze.clockwise)
+    assert vorze == VorzeRotateCommand.from_rotations(vorze.rotations)
 
 
 @pytest.mark.parametrize(

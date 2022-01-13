@@ -1,51 +1,36 @@
 """Test cases for generic commands."""
 import pytest
 
-from a10sa_script.command import LinearCommand
-from a10sa_script.command import RotateCommand
-from a10sa_script.command import VibrateCommand
+from a10sa_script.command import GenericLinearCommand
+from a10sa_script.command import GenericRotateCommand
+from a10sa_script.command import GenericVibrateCommand
 
 
 @pytest.mark.parametrize("speed", [0.0, 0.5, 1.0])
 def test_vibrate(speed: float) -> None:
     """Test vibrate Buttplug roundtrip."""
-    native = VibrateCommand(speed)
-    buttplug = native.to_buttplug()
-    cmd = buttplug.speeds[0]
-    assert native.speed == cmd.speed
-    assert native == VibrateCommand.from_buttplug(buttplug)
+    cmd = GenericVibrateCommand(speed)
+    assert cmd.speed == cmd.speeds[0]
+    assert cmd == GenericVibrateCommand.from_speeds(cmd.speeds)
 
 
-@pytest.mark.parametrize(
-    "duration, position",
-    [(0, 0.0), (100, 0.5), (1000, 1.0)],
-)
+@pytest.mark.parametrize("duration", [0, 100, 1000])
+@pytest.mark.parametrize("position", [0.0, 0.5, 1.0])
 def test_linear(duration: int, position: float) -> None:
     """Test rotate Buttplug roundtrip."""
-    native = LinearCommand(duration, position)
-    buttplug = native.to_buttplug()
-    cmd = buttplug.vectors[0]
-    assert native.duration == cmd.duration
-    assert native.position == cmd.position
-    assert native == LinearCommand.from_buttplug(buttplug)
+    cmd = GenericLinearCommand(duration, position)
+    vector = cmd.vectors[0]
+    assert cmd.duration == vector[0]
+    assert cmd.position == vector[1]
+    assert cmd == GenericLinearCommand.from_vectors(cmd.vectors)
 
 
-@pytest.mark.parametrize(
-    "speed, clockwise",
-    [
-        (0.0, True),
-        (0.0, False),
-        (0.5, True),
-        (0.5, False),
-        (1.0, True),
-        (1.0, False),
-    ],
-)
+@pytest.mark.parametrize("speed", [0.0, 0.5, 1.0])
+@pytest.mark.parametrize("clockwise", [True, False])
 def test_rotate(speed: float, clockwise: bool) -> None:
     """Test rotate Buttplug roundtrip."""
-    native = RotateCommand(speed, clockwise)
-    buttplug = native.to_buttplug()
-    cmd = buttplug.rotations[0]
-    assert native.speed == cmd.speed
-    assert native.clockwise == cmd.clockwise
-    assert native == RotateCommand.from_buttplug(buttplug)
+    cmd = GenericRotateCommand(speed, clockwise)
+    rotation = cmd.rotations[0]
+    assert cmd.speed == rotation[0]
+    assert cmd.clockwise == rotation[1]
+    assert cmd == GenericRotateCommand.from_rotations(cmd.rotations)

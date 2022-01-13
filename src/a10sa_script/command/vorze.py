@@ -4,19 +4,19 @@ from dataclasses import dataclass
 from typing import Any
 from typing import ClassVar
 from typing import Iterable
+from typing import List
 from typing import Tuple
 from typing import Type
 from typing import TypeVar
+from typing import Union
 
-from buttplug.core import RotateCmd
 from buttplug.core import RotateSubcommand
 
 from .base import BaseCommand
+from .base import RotateCommand
 
-# from buttplug.core import LinearCmd
 # from buttplug.core import LinearSubcommand
 # from buttplug.core import SpeedSubcommand
-# from buttplug.core import VibrateCmd
 
 
 _T = TypeVar("_T", bound="BaseVorzeCommand")
@@ -61,7 +61,7 @@ class BaseVorzeCommand(BaseCommand):
 
 
 @dataclass
-class VorzeRotateCommand(BaseVorzeCommand):
+class VorzeRotateCommand(BaseVorzeCommand, RotateCommand):
     """Vorze rotation command.
 
     Attributes:
@@ -74,25 +74,40 @@ class VorzeRotateCommand(BaseVorzeCommand):
     speed: int
     clockwise: bool
 
-    def to_buttplug(self, device_index: int = 0) -> RotateCmd:
-        """Return this command as a Buttplug message.
-
-        Arguments:
-            device_index: Buttplug device index.
+    @property
+    def rotations(self) -> List[Tuple[float, bool]]:
+        """Return Buttplug RotateCmd rotations for this command.
 
         Returns:
-            Buttplug message.
+            List of vectors suitable for use with buttplug-py
+            ``device.send_rotate_cmd()``.
         """
-        cmd = RotateSubcommand(0, self.speed / self.SPEED_DIVISOR, self.clockwise)
-        return RotateCmd(device_index, [cmd])
+        return [(self.speed / self.SPEED_DIVISOR, self.clockwise)]
 
     @classmethod
-    def from_buttplug(cls, cmd: RotateCmd) -> "VorzeRotateCommand":
-        """Construct command from a Buttplug message."""
-        rotation = cmd.rotations[0]
-        return VorzeRotateCommand(
-            rotation.speed * cls.SPEED_DIVISOR, rotation.clockwise
-        )
+    def from_rotations(
+        cls, rotations: Union[List[RotateSubcommand], List[Tuple[float, bool]]]
+    ) -> "VorzeRotateCommand":
+        """Return a command instance from Buttplug RotateCmd rotations.
+
+        Arguments:
+            rotations: Buttplug RotateCmd rotations list.
+
+        Returns:
+            New command instance.
+
+        Raises:
+            ValueError: Invalid rotations.
+        """
+        if not rotations:
+            raise ValueError("Rotations cannot be empty.")
+        rotation = rotations[0]
+        if isinstance(rotation, RotateSubcommand):
+            speed = rotation.speed
+            clockwise = rotation.clockwise
+        else:
+            speed, clockwise = rotation
+        return cls(round(speed * cls.SPEED_DIVISOR), clockwise)
 
     def to_csv(self) -> Tuple[int, int]:
         """Return Vorze CSV row data for this command."""

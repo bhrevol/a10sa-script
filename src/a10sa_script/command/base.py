@@ -2,36 +2,55 @@
 from abc import ABC
 from abc import abstractmethod
 from dataclasses import dataclass
+from typing import List
+from typing import Protocol
+from typing import Tuple
+from typing import Union
 
-from buttplug.core import ButtplugMessage
-from buttplug.core import LinearCmd
 from buttplug.core import LinearSubcommand
-from buttplug.core import RotateCmd
 from buttplug.core import RotateSubcommand
 from buttplug.core import SpeedSubcommand
-from buttplug.core import VibrateCmd
 
 
 class BaseCommand(ABC):
-    """Base (native) script command."""
+    """Base a10sa-script command."""
 
+
+class VibrateCommand(Protocol):
+    """Vibration command protocol.
+
+    Commands which implement VibrateCommand can be serialized to/from Buttplug
+    VibrateCmd speeds.
+    """
+
+    @property
     @abstractmethod
-    def to_buttplug(self, device_index: int = 0) -> ButtplugMessage:
-        """Return this command as a Buttplug message.
+    def speeds(self) -> List[float]:
+        """Return Buttplug VibrateCmd speeds for this command.
 
-        Arguments:
-            device_index: Buttplug device index.
+        Returns:
+            List of speeds suitable for use with buttplug-py
+            ``device.send_vibrate_cmd()``.
         """
 
     @classmethod
     @abstractmethod
-    def from_buttplug(cls, msg: ButtplugMessage) -> "BaseCommand":
-        """Construct command from a Buttplug message."""
+    def from_speeds(
+        cls, speeds: Union[List[SpeedSubcommand], List[float]]
+    ) -> "VibrateCommand":
+        """Return a command instance from Buttplug VibrateCmd speeds.
+
+        Arguments:
+            speeds: Buttplug VibrateCmd speeds list.
+
+        Returns:
+            New command instance.
+        """
 
 
 @dataclass
-class VibrateCommand(BaseCommand):
-    """Generic vibration command.
+class GenericVibrateCommand(BaseCommand, VibrateCommand):
+    """Generic Buttplug-compliant vibration command.
 
     Attributes
         speed: Vibration speed with a range of [0.0-1.0].
@@ -39,26 +58,74 @@ class VibrateCommand(BaseCommand):
 
     speed: float
 
-    def to_buttplug(self, device_index: int = 0) -> VibrateCmd:
-        """Return this command as a Buttplug message.
-
-        Arguments:
-            device_index: Buttplug device index.
+    @property
+    def speeds(self) -> List[float]:
+        """Return Buttplug VibrateCmd speeds for this command.
 
         Returns:
-            Buttplug message.
+            List of speeds suitable for use with buttplug-py
+            ``device.send_vibrate_cmd()``.
         """
-        return VibrateCmd(device_index, [SpeedSubcommand(0, self.speed)])
+        return [self.speed]
 
     @classmethod
-    def from_buttplug(cls, msg: VibrateCmd) -> "VibrateCommand":
-        """Construct command from a Buttplug message."""
-        cmd = msg.speeds[0]
-        return cls(cmd.speed)
+    def from_speeds(
+        cls, speeds: Union[List[SpeedSubcommand], List[float]]
+    ) -> "GenericVibrateCommand":
+        """Return a command instance from Buttplug VibrateCmd speeds.
+
+        Arguments:
+            speeds: Buttplug VibrateCmd speeds list.
+
+        Returns:
+            New command instance.
+
+        Raises:
+            ValueError: Invalid speeds.
+        """
+        if not speeds:
+            raise ValueError("Vibrate speeds cannot be empty.")
+
+        speed = speeds[0]
+        if isinstance(speed, SpeedSubcommand):
+            speed = speed.speed
+        return cls(speed)
+
+
+class LinearCommand(Protocol):
+    """Linear command protocol.
+
+    Commands which implement LinearCommand can be serialized to/from Buttplug
+    LinearCmd vectors.
+    """
+
+    @property
+    @abstractmethod
+    def vectors(self) -> List[Tuple[int, float]]:
+        """Return Buttplug LinearCmd vectors for this command.
+
+        Returns:
+            List of vectors suitable for use with buttplug-py
+            ``device.send_linear_cmd()``.
+        """
+
+    @classmethod
+    @abstractmethod
+    def from_vectors(
+        cls, vectors: Union[List[LinearSubcommand], List[Tuple[int, float]]]
+    ) -> "LinearCommand":
+        """Return a command instance from Buttplug LinearCmd speeds.
+
+        Arguments:
+            vectors: Buttplug LinearCmd vectors list.
+
+        Returns:
+            New command instance.
+        """
 
 
 @dataclass
-class LinearCommand(BaseCommand):
+class GenericLinearCommand(BaseCommand, LinearCommand):
     """Generic linear movement command.
 
     Attributes:
@@ -69,28 +136,73 @@ class LinearCommand(BaseCommand):
     duration: int
     position: float
 
-    def to_buttplug(self, device_index: int = 0) -> LinearCmd:
-        """Return this command as a Buttplug message.
-
-        Arguments:
-            device_index: Buttplug device index.
+    @property
+    def vectors(self) -> List[Tuple[int, float]]:
+        """Return Buttplug LinearCmd vectors for this command.
 
         Returns:
-            Buttplug message.
+            List of vectors suitable for use with buttplug-py
+            ``device.send_linear_cmd()``.
         """
-        return LinearCmd(
-            device_index, [LinearSubcommand(0, self.duration, self.position)]
-        )
+        return [(self.duration, self.position)]
 
     @classmethod
-    def from_buttplug(cls, msg: LinearCmd) -> "LinearCommand":
-        """Construct command from a Buttplug message."""
-        cmd = msg.vectors[0]
-        return cls(cmd.duration, cmd.position)
+    def from_vectors(
+        cls, vectors: Union[List[LinearSubcommand], List[Tuple[int, float]]]
+    ) -> "GenericLinearCommand":
+        """Return a command instance from Buttplug LinearCmd speeds.
+
+        Arguments:
+            vectors: Buttplug LinearCmd vectors list.
+
+        Returns:
+            New command instance.
+
+        Raises:
+            ValueError: Invalid vectors.
+        """
+        if not vectors:
+            raise ValueError("Linear vectors cannot be empty.")
+        vector = vectors[0]
+        if isinstance(vector, LinearSubcommand):
+            vector = (vector.duration, vector.position)
+        return cls(*vector)
+
+
+class RotateCommand(Protocol):
+    """Rotate command protocol.
+
+    Commands which implement RotateCommand can be serialized to/from Buttplug
+    RotateCmd rotations.
+    """
+
+    @property
+    @abstractmethod
+    def rotations(self) -> List[Tuple[float, bool]]:
+        """Return Buttplug RotateCmd rotations for this command.
+
+        Returns:
+            List of vectors suitable for use with buttplug-py
+            ``device.send_rotate_cmd()``.
+        """
+
+    @classmethod
+    @abstractmethod
+    def from_rotations(
+        cls, rotations: Union[List[RotateSubcommand], List[Tuple[float, bool]]]
+    ) -> "RotateCommand":
+        """Return a command instance from Buttplug RotateCmd rotations.
+
+        Arguments:
+            rotations: Buttplug RotateCmd rotations list.
+
+        Returns:
+            New command instance.
+        """
 
 
 @dataclass
-class RotateCommand(BaseCommand):
+class GenericRotateCommand(BaseCommand, RotateCommand):
     """Generic rotation command.
 
     Attributes:
@@ -101,21 +213,34 @@ class RotateCommand(BaseCommand):
     speed: float
     clockwise: bool
 
-    def to_buttplug(self, device_index: int = 0) -> RotateCmd:
-        """Return this command as a Buttplug message.
-
-        Arguments:
-            device_index: Buttplug device index.
+    @property
+    def rotations(self) -> List[Tuple[float, bool]]:
+        """Return Buttplug RotateCmd rotations for this command.
 
         Returns:
-            Buttplug message.
+            List of vectors suitable for use with buttplug-py
+            ``device.send_rotate_cmd()``.
         """
-        return RotateCmd(
-            device_index, [RotateSubcommand(0, self.speed, self.clockwise)]
-        )
+        return [(self.speed, self.clockwise)]
 
     @classmethod
-    def from_buttplug(cls, msg: RotateCmd) -> "RotateCommand":
-        """Construct command from a Buttplug message."""
-        cmd = msg.rotations[0]
-        return cls(cmd.speed, cmd.clockwise)
+    def from_rotations(
+        cls, rotations: Union[List[RotateSubcommand], List[Tuple[float, bool]]]
+    ) -> "GenericRotateCommand":
+        """Return a command instance from Buttplug RotateCmd rotations.
+
+        Arguments:
+            rotations: Buttplug RotateCmd rotations list.
+
+        Returns:
+            New command instance.
+
+        Raises:
+            ValueError: Invalid rotations.
+        """
+        if not rotations:
+            raise ValueError("Rotations cannot be empty.")
+        rotation = rotations[0]
+        if isinstance(rotation, RotateSubcommand):
+            rotation = (rotation.speed, rotation.clockwise)
+        return cls(*rotation)
