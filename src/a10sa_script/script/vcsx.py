@@ -8,6 +8,7 @@ from typing import Optional
 from typing import Type
 
 from ..command.vorze import VorzeRotateCommand
+from ..command.vorze import VorzeVibrateCommand
 from ..exceptions import ParseError
 from ..utils import to_u32
 from ..utils import to_uint
@@ -90,6 +91,18 @@ class VCSXScript(SerializableScript[_T]):
             )
         except (OSError, ValueError) as e:
             raise ParseError("Failed to parse file as VCSX data.") from e
+
+
+class VCSXOnaRhythmScript(VCSXScript[VorzeVibrateCommand]):
+    """VCSX OnaRhythm script."""
+
+    VCSX_MAGIC = b"VCSX\x01Vorze_OnaRhythm\x00"
+    VCSX_DEFAULT_VERSION = b"\x01\x42"
+
+    @classmethod
+    def _command_cls(cls) -> Type[VorzeVibrateCommand]:
+        """Return command class for this script."""
+        return VorzeVibrateCommand
 
 
 class VCSXCycloneScript(VCSXScript[VorzeRotateCommand]):
