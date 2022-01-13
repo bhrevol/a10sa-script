@@ -11,12 +11,13 @@ from typing import TypeVar
 from typing import Union
 
 from buttplug.core import RotateSubcommand
+from buttplug.core import SpeedSubcommand
 
 from .base import BaseCommand
 from .base import RotateCommand
+from .base import VibrateCommand
 
 # from buttplug.core import LinearSubcommand
-# from buttplug.core import SpeedSubcommand
 
 
 _T = TypeVar("_T", bound="BaseVorzeCommand")
@@ -58,6 +59,101 @@ class BaseVorzeCommand(BaseCommand):
     @abstractmethod
     def vcsx_size(cls) -> int:
         """Return size of VCSX command data in bytes."""
+
+
+@dataclass
+class VorzeVibrateCommand(BaseVorzeCommand, VibrateCommand):
+    """Vorze vibration command.
+
+    Attributes:
+        speed: Vibration speed with a range of [0-100].
+    """
+
+    SPEED_DIVISOR: ClassVar[int] = 100
+
+    speed: int
+
+    @property
+    def speeds(self) -> List[float]:
+        """Return Buttplug VibrateCmd speeds for this command.
+
+        Returns:
+            List of speeds suitable for use with buttplug-py
+            ``device.send_vibrate_cmd()``.
+        """
+        return [self.speed / self.SPEED_DIVISOR]
+
+    @classmethod
+    def from_speeds(
+        cls, speeds: Union[List[SpeedSubcommand], List[float]]
+    ) -> "VorzeVibrateCommand":
+        """Return a command instance from Buttplug VibrateCmd speeds.
+
+        Arguments:
+            speeds: Buttplug VibrateCmd speeds list.
+
+        Returns:
+            New command instance.
+
+        Raises:
+            ValueError: Invalid speeds.
+        """
+        if not speeds:
+            raise ValueError("Vibrate speeds cannot be empty.")
+        speed = speeds[0]
+        if isinstance(speed, SpeedSubcommand):
+            speed = speed.speed
+        return cls(round(speed * cls.SPEED_DIVISOR))
+
+    def to_csv(self) -> Tuple[int]:
+        """Return Vorze CSV row data for this command."""
+        return (self.speed,)
+
+    @classmethod
+    def from_csv(
+        cls: Type["VorzeVibrateCommand"], row: Iterable[Any]
+    ) -> "VorzeVibrateCommand":
+        """Construct command from a Vorze CSV row.
+
+        Arguments:
+            row: CSV row data.
+
+        Returns:
+            Vibration command.
+        """
+        (speed,) = row
+        return cls(int(speed))
+
+    @classmethod
+    def vcsx_size(cls) -> int:
+        """Return size of VCSX command data in bytes."""
+        return 1
+
+    def to_vcsx(self) -> bytes:
+        """Return LPEG VCSX data for this command."""
+        cmd = self.speed & 0x7F
+        return bytes([cmd])
+
+    @classmethod
+    def from_vcsx(
+        cls: Type["VorzeVibrateCommand"], data: bytes
+    ) -> "VorzeVibrateCommand":
+        """Construct command from LPEG VCSX data.
+
+        Arguments:
+            data: VCSX data.
+
+        Returns:
+            Rotation command.
+
+        Raises:
+            ValueError: Invalid VCSX data.
+        """
+        if not data:
+            raise ValueError("Invalid VCSX data")
+        cmd = data[0]
+        speed = cmd & 0x7F
+        return cls(speed)
 
 
 @dataclass
