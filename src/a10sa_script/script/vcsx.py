@@ -7,6 +7,7 @@ from typing import Iterable
 from typing import Optional
 from typing import Type
 
+from ..command.vorze import VorzeLinearCommand
 from ..command.vorze import VorzeRotateCommand
 from ..command.vorze import VorzeVibrateCommand
 from ..exceptions import ParseError
@@ -103,6 +104,18 @@ class VCSXOnaRhythmScript(VCSXScript[VorzeVibrateCommand]):
     def _command_cls(cls) -> Type[VorzeVibrateCommand]:
         """Return command class for this script."""
         return VorzeVibrateCommand
+
+
+class VCSXPistonScript(VCSXScript[VorzeLinearCommand]):
+    """VCSX Piston script."""
+
+    VCSX_MAGIC = b"VCSX\x01Vorze_Piston\x00"
+    VCSX_DEFAULT_VERSION = b"\x02\x57\x42"
+
+    @classmethod
+    def _command_cls(cls) -> Type[VorzeLinearCommand]:
+        """Return command class for this script."""
+        return VorzeLinearCommand
 
 
 class VCSXCycloneScript(VCSXScript[VorzeRotateCommand]):

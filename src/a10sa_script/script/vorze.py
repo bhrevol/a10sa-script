@@ -10,6 +10,7 @@ from typing import TypeVar
 from typing_extensions import TypeAlias
 
 from ..command.vorze import BaseVorzeCommand
+from ..command.vorze import VorzeLinearCommand
 from ..command.vorze import VorzeRotateCommand
 from ..command.vorze import VorzeVibrateCommand
 from ..exceptions import ParseError
@@ -107,6 +108,19 @@ class VorzeVibrateScript(VorzeScript[VorzeVibrateCommand]):
     def _command_cls(cls) -> Type[VorzeVibrateCommand]:
         """Return command class for this script."""
         return VorzeVibrateCommand
+
+
+class VorzeLinearScript(VorzeScript[VorzeLinearCommand]):
+    """Vorze linear commands script.
+
+    Note:
+        Script format for Piston devices.
+    """
+
+    @classmethod
+    def _command_cls(cls) -> Type[VorzeLinearCommand]:
+        """Return command class for this script."""
+        return VorzeLinearCommand
 
 
 class VorzeRotateScript(VorzeScript[VorzeRotateCommand]):

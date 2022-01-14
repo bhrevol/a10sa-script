@@ -6,10 +6,12 @@ from typing import Type
 
 import pytest
 
+from a10sa_script.command.vorze import VorzeLinearCommand
 from a10sa_script.command.vorze import VorzeRotateCommand
 from a10sa_script.command.vorze import VorzeVibrateCommand
 from a10sa_script.exceptions import ParseError
 from a10sa_script.script.vorze import _T
+from a10sa_script.script.vorze import VorzeLinearScript
 from a10sa_script.script.vorze import VorzeRotateScript
 from a10sa_script.script.vorze import VorzeScript
 from a10sa_script.script.vorze import VorzeScriptCommand
@@ -22,13 +24,28 @@ VIBRATE_CSV = """1870,57
 1997,61
 2005,0
 """
-
 VIBRATE_COMMANDS = [
     VorzeScriptCommand(187000, VorzeVibrateCommand(57)),
     VorzeScriptCommand(187900, VorzeVibrateCommand(41)),
     VorzeScriptCommand(188800, VorzeVibrateCommand(0)),
     VorzeScriptCommand(199700, VorzeVibrateCommand(61)),
     VorzeScriptCommand(200500, VorzeVibrateCommand(0)),
+]
+
+LINEAR_CSV = """458,146,9
+468,0,1
+789,200,17
+794,0,3
+822,146,27
+825,0,23
+"""
+LINEAR_COMMANDS = [
+    VorzeScriptCommand(45800, VorzeLinearCommand(146, 9)),
+    VorzeScriptCommand(46800, VorzeLinearCommand(0, 1)),
+    VorzeScriptCommand(78900, VorzeLinearCommand(200, 17)),
+    VorzeScriptCommand(79400, VorzeLinearCommand(0, 3)),
+    VorzeScriptCommand(82200, VorzeLinearCommand(146, 27)),
+    VorzeScriptCommand(82500, VorzeLinearCommand(0, 23)),
 ]
 
 ROTATE_CSV = """1870,1,57
@@ -38,7 +55,6 @@ ROTATE_CSV = """1870,1,57
 2001,0,61
 2005,0,0
 """
-
 ROTATE_COMMANDS = [
     VorzeScriptCommand(187000, VorzeRotateCommand(57, False)),
     VorzeScriptCommand(187900, VorzeRotateCommand(41, True)),
@@ -53,6 +69,7 @@ ROTATE_COMMANDS = [
     "script_cls, csv, commands",
     [
         (VorzeVibrateScript, VIBRATE_CSV, VIBRATE_COMMANDS),
+        (VorzeLinearScript, LINEAR_CSV, LINEAR_COMMANDS),
         (VorzeRotateScript, ROTATE_CSV, ROTATE_COMMANDS),
     ],
 )
@@ -71,6 +88,7 @@ def test_load(
     "script_cls, csv, commands",
     [
         (VorzeVibrateScript, VIBRATE_CSV, VIBRATE_COMMANDS),
+        (VorzeLinearScript, LINEAR_CSV, LINEAR_COMMANDS),
         (VorzeRotateScript, ROTATE_CSV, ROTATE_COMMANDS),
     ],
 )
@@ -88,7 +106,9 @@ def test_dump(
     assert new.read_text() == csv
 
 
-@pytest.mark.parametrize("script_cls", [VorzeVibrateScript, VorzeRotateScript])
+@pytest.mark.parametrize(
+    "script_cls", [VorzeVibrateScript, VorzeLinearScript, VorzeRotateScript]
+)
 def test_load_invalid(script_cls: Type[VorzeScript[_T]]) -> None:
     """Test invalid CSV parsing."""
     orig = io.BytesIO(b"\x00")
