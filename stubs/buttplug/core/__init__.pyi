@@ -1,1 +1,7 @@
-from .messages import ButtplugMessage as ButtplugMessage, LinearCmd as LinearCmd, LinearSubcommand as LinearSubcommand, RotateCmd as RotateCmd, RotateSubcommand as RotateSubcommand, SpeedSubcommand as SpeedSubcommand, VibrateCmd as VibrateCmd
+from .messages import ButtplugMessage as ButtplugMessage
+from .messages import LinearCmd as LinearCmd
+from .messages import LinearSubcommand as LinearSubcommand
+from .messages import RotateCmd as RotateCmd
+from .messages import RotateSubcommand as RotateSubcommand
+from .messages import SpeedSubcommand as SpeedSubcommand
+from .messages import VibrateCmd as VibrateCmd
