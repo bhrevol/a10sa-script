@@ -124,6 +124,43 @@ class LinearCommand(Protocol):
         """
 
 
+class LinearPositionCommand(Protocol):
+    """Alternate linear command protocol for devices which use absolute position.
+
+    Commands which implement LinearPosition Command can be serialized to/from
+    Buttplug LinearCmd vectors as long as the current device position is known.
+    """
+
+    @abstractmethod
+    def vectors(self, position: float) -> List[Tuple[int, float]]:
+        """Return Buttplug LinearCmd vectors for this command.
+
+        Arguments:
+            position: Current device position in the range [0.0-1.0].
+
+        Returns:
+            List of vectors suitable for use with buttplug-py
+            ``device.send_linear_cmd()``.
+        """
+
+    @classmethod
+    @abstractmethod
+    def from_vectors(
+        cls,
+        vectors: Union[List[LinearSubcommand], List[Tuple[int, float]]],
+        position: float,
+    ) -> "LinearPositionCommand":
+        """Return a command instance from Buttplug LinearCmd speeds.
+
+        Arguments:
+            vectors: Buttplug LinearCmd vectors list.
+            position: Current device position in the range [0.0-1.0].
+
+        Returns:
+            New command instance.
+        """
+
+
 @dataclass
 class GenericLinearCommand(BaseCommand, LinearCommand):
     """Generic linear movement command.

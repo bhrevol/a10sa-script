@@ -1,12 +1,64 @@
 """Test cases for vorze commands."""
 from typing import Tuple
+from typing import Type
 
 import pytest
+from buttplug.core import LinearSubcommand
 from buttplug.core import RotateSubcommand
 from buttplug.core import SpeedSubcommand
 
+from a10sa_script.command import VorzeLinearCommand
 from a10sa_script.command import VorzeRotateCommand
 from a10sa_script.command import VorzeVibrateCommand
+from a10sa_script.command.vorze import BaseVorzeCommand
+
+
+@pytest.mark.parametrize(
+    "vorze, row",
+    [
+        (VorzeVibrateCommand(0), (0,)),
+        (VorzeVibrateCommand(50), (50,)),
+        (VorzeVibrateCommand(100), (100,)),
+        (VorzeLinearCommand(0, 0), (0, 0)),
+        (VorzeLinearCommand(100, 50), (100, 50)),
+        (VorzeLinearCommand(200, 100), (200, 100)),
+        (VorzeRotateCommand(0, True), (0, 0)),
+        (VorzeRotateCommand(0, False), (1, 0)),
+        (VorzeRotateCommand(50, True), (0, 50)),
+        (VorzeRotateCommand(50, False), (1, 50)),
+        (VorzeRotateCommand(100, True), (0, 100)),
+        (VorzeRotateCommand(100, False), (1, 100)),
+    ],
+)
+def test_csv(vorze: BaseVorzeCommand, row: Tuple[int]) -> None:
+    """Test CSV roundtrip."""
+    cmd_cls: Type[BaseVorzeCommand] = vorze.__class__
+    assert vorze.to_csv() == row
+    assert vorze == cmd_cls.from_csv(row)
+
+
+@pytest.mark.parametrize(
+    "vorze, data",
+    [
+        (VorzeVibrateCommand(0), b"\x00"),
+        (VorzeVibrateCommand(50), b"\x32"),
+        (VorzeVibrateCommand(100), b"\x64"),
+        (VorzeLinearCommand(0, 0), b"\x00\x00\x00"),
+        (VorzeLinearCommand(100, 50), b"\x00\x64\x32"),
+        (VorzeLinearCommand(200, 100), b"\x00\xC8\x64"),
+        (VorzeRotateCommand(0, True), b"\x00"),
+        (VorzeRotateCommand(0, False), b"\x80"),
+        (VorzeRotateCommand(50, True), b"\x32"),
+        (VorzeRotateCommand(50, False), b"\xB2"),
+        (VorzeRotateCommand(100, True), b"\x64"),
+        (VorzeRotateCommand(100, False), b"\xE4"),
+    ],
+)
+def test_vcsx(vorze: VorzeVibrateCommand, data: bytes) -> None:
+    """Test rotate VCSX roundtrip."""
+    cmd_cls: Type[BaseVorzeCommand] = vorze.__class__
+    assert vorze.to_vcsx() == data
+    assert vorze == cmd_cls.from_vcsx(data)
 
 
 @pytest.mark.parametrize(
@@ -30,31 +82,44 @@ def test_vibrate_buttplug(vorze: VorzeVibrateCommand, buttplug_speed: float) -> 
 
 
 @pytest.mark.parametrize(
-    "vorze, row",
+    "vorze, curpos, buttplug_duration, buttplug_pos",
     [
-        (VorzeVibrateCommand(0), (0,)),
-        (VorzeVibrateCommand(50), (50,)),
-        (VorzeVibrateCommand(100), (100,)),
+        (VorzeLinearCommand(0, 0), 0.0, 0, 0.0),
+        (VorzeLinearCommand(100, 50), 0.0, 131, 0.5),
+        (VorzeLinearCommand(200, 50), 0.5, 131, 1.0),
+        (VorzeLinearCommand(100, 100), 1.0, 74, 0.5),
+        (VorzeLinearCommand(0, 100), 0.5, 74, 0.0),
     ],
 )
-def test_vibrate_csv(vorze: VorzeVibrateCommand, row: Tuple[int]) -> None:
-    """Test vibrate CSV roundtrip."""
-    assert vorze.to_csv() == row
-    assert vorze == VorzeVibrateCommand.from_csv(row)
+def test_linear_buttplug(
+    vorze: VorzeLinearCommand,
+    curpos: float,
+    buttplug_duration: int,
+    buttplug_pos: float,
+) -> None:
+    """Test vibrate Buttplug roundtrip."""
+    vector = vorze.vectors(curpos)[0]
+    assert vector == (buttplug_duration, buttplug_pos)
+    with pytest.raises(ValueError):
+        VorzeLinearCommand.from_vectors([], curpos)  # type: ignore[arg-type]
+    assert vorze == VorzeLinearCommand.from_vectors(vorze.vectors(curpos), curpos)
+    assert vorze == VorzeLinearCommand.from_vectors(
+        [
+            LinearSubcommand(0, duration, position)
+            for duration, position in vorze.vectors(curpos)
+        ],
+        curpos,
+    )
 
 
-@pytest.mark.parametrize(
-    "vorze, data",
-    [
-        (VorzeVibrateCommand(0), b"\x00"),
-        (VorzeVibrateCommand(50), b"\x32"),
-        (VorzeVibrateCommand(100), b"\x64"),
-    ],
-)
-def test_vibrate_vcsx(vorze: VorzeVibrateCommand, data: bytes) -> None:
-    """Test rotate VCSX roundtrip."""
-    assert vorze.to_vcsx() == data
-    assert vorze == VorzeVibrateCommand.from_vcsx(data)
+def test_linear_speed_limits() -> None:
+    """Test construction resulting in invalid vorze speeds."""
+    cmd = VorzeLinearCommand.from_vectors([(100, 1.0)], 0.0)
+    # required speed for 100ms 200 unit command rounds to 161
+    assert cmd.speed == 100
+    cmd = VorzeLinearCommand.from_vectors([(100000, 1.0)], 0.0)
+    # required speed for 100s 200 unit command rounds to 0
+    assert cmd.speed == 1
 
 
 @pytest.mark.parametrize(
@@ -78,37 +143,3 @@ def test_rotate_buttplug(vorze: VorzeRotateCommand, buttplug_speed: float) -> No
         [RotateSubcommand(0, speed, clockwise) for speed, clockwise in vorze.rotations]
     )
     assert vorze == VorzeRotateCommand.from_rotations(vorze.rotations)
-
-
-@pytest.mark.parametrize(
-    "vorze, row",
-    [
-        (VorzeRotateCommand(0, True), (0, 0)),
-        (VorzeRotateCommand(0, False), (1, 0)),
-        (VorzeRotateCommand(50, True), (0, 50)),
-        (VorzeRotateCommand(50, False), (1, 50)),
-        (VorzeRotateCommand(100, True), (0, 100)),
-        (VorzeRotateCommand(100, False), (1, 100)),
-    ],
-)
-def test_rotate_csv(vorze: VorzeRotateCommand, row: Tuple[int, int]) -> None:
-    """Test rotate CSV roundtrip."""
-    assert vorze.to_csv() == row
-    assert vorze == VorzeRotateCommand.from_csv(row)
-
-
-@pytest.mark.parametrize(
-    "vorze, data",
-    [
-        (VorzeRotateCommand(0, True), b"\x00"),
-        (VorzeRotateCommand(0, False), b"\x80"),
-        (VorzeRotateCommand(50, True), b"\x32"),
-        (VorzeRotateCommand(50, False), b"\xb2"),
-        (VorzeRotateCommand(100, True), b"\x64"),
-        (VorzeRotateCommand(100, False), b"\xe4"),
-    ],
-)
-def test_rotate_vcsx(vorze: VorzeRotateCommand, data: bytes) -> None:
-    """Test rotate VCSX roundtrip."""
-    assert vorze.to_vcsx() == data
-    assert vorze == VorzeRotateCommand.from_vcsx(data)
