@@ -72,6 +72,16 @@ You can install *A10SA Script* via pip_ from PyPI_:
 Usage
 -----
 
+Convert VCSX ``Vorze_CycloneSA.bin`` to ``script_cyclone.csv``:
+
+.. code:: py
+
+    >>> from a10sa_script.script import VCSXCycloneScript, VorzeRotateScript
+    >>> with open("Vorze_CycloneSA.bin", "rb") as f:
+    ...     vcsx = VCSXCycloneScript.load(f)
+    >>> with open("script_cyclone.csv", "wb") as f:
+    ...     VorzeRotateScript(vcsx.commands).dump(f)
+
 Please see the `Command-line Reference <Usage_>`_ for details.
 
 
