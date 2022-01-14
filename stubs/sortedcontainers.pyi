@@ -7,6 +7,7 @@ from typing import TypeVar
 from typing import Union
 from typing import overload
 
+
 T = TypeVar("T")
 
 class SortedList(MutableSequence[T]):

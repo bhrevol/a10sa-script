@@ -8,9 +8,9 @@ from typing import Iterable
 from typing import Iterator
 from typing import MutableSequence
 from typing import Optional
-from typing import overload
 from typing import TypeVar
 from typing import Union
+from typing import overload
 
 from sortedcontainers import SortedList
 from typing_extensions import TypeAlias
