@@ -26,7 +26,7 @@ A10SA Script
    :target: https://github.com/bhrevol/a10sa-script/actions?workflow=Tests
    :alt: Tests
 .. |Codecov| image:: https://codecov.io/gh/bhrevol/a10sa-script/branch/main/graph/badge.svg
-   :target: https://codecov.io/gh/bhrevol/a10sa-script
+   :target: https://app.codecov.io/gh/bhrevol/a10sa-script
    :alt: Codecov
 .. |pre-commit| image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
    :target: https://github.com/pre-commit/pre-commit
@@ -119,5 +119,5 @@ This project was generated from `@cjolowicz`_'s `Hypermodern Python Cookiecutter
 .. _file an issue: https://github.com/bhrevol/a10sa-script/issues
 .. _pip: https://pip.pypa.io/
 .. github-only
-.. _Contributor Guide: CONTRIBUTING.rst
+.. _Contributor Guide: https://a10sa-script.readthedocs.io/en/latest/contributing.html
 .. _Usage: https://a10sa-script.readthedocs.io/en/latest/usage.html
