@@ -6,13 +6,15 @@
     {
       "matchDepTypes": ["dev-dependencies"],
       "automerge": true,
-      "automergeType": "branch"
+      "automergeType": "pr"
     },
     {
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true,
-      "automergeType": "branch"
+      "automergeType": "pr"
     }
   ],
+  "automergeStrategy": "rebase",
+  "platformAutomerge": true,
   "rangeStrategy": "update-lockfile"
 }
