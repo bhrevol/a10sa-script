@@ -4,7 +4,7 @@
   "labels": ["dependencies"],
   "packageRules": [
     {
-      "matchDepTypes": ["devDependencies"],
+      "matchDepTypes": ["dev-dependencies"],
       "automerge": true,
       "automergeType": "branch"
     },
