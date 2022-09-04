@@ -12,7 +12,7 @@ from buttplug.core import RotateSubcommand
 from buttplug.core import SpeedSubcommand
 
 
-class BaseCommand(ABC):
+class BaseCommand(ABC):  # noqa: B024
     """Base a10sa-script command."""
 
 
