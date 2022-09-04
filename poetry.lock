@@ -89,7 +89,7 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "buttplug"
-version = "0.2.1"
+version = "0.3.0"
 description = "Python implementation of the Buttplug Intimate Hardware Control Protocol."
 category = "main"
 optional = false
@@ -1092,7 +1092,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<4.0"
-content-hash = "f24c8271b6364119865c57aea172533b5321331acc038d502691cc06367e9ade"
+content-hash = "fc0e10822bb9fe846723dd490790c6796d005639f29dcf866aa04b6120cd4619"
 
 [metadata.files]
 alabaster = [
@@ -1141,8 +1141,7 @@ black = [
     {file = "black-22.8.0.tar.gz", hash = "sha256:792f7eb540ba9a17e8656538701d3eb1afcb134e3b45b71f20b25c77a8db7e6e"},
 ]
 buttplug = [
-    {file = "buttplug-0.2.1-py3-none-any.whl", hash = "sha256:64bd69aea4be925581e74a524797a8edcd2f9066200e799a0ebec10872b43104"},
-    {file = "buttplug-0.2.1.tar.gz", hash = "sha256:6cd68da20ef4c7d700ee0a341265854364b92f5afd59c7f202423718d19a9b75"},
+    {file = "buttplug-0.3.0.tar.gz", hash = "sha256:2b75cc1183882cf868121229f6c6a5b7f08019d49160ae8e2abd3b6e36638c74"},
 ]
 certifi = [
     {file = "certifi-2021.10.8-py2.py3-none-any.whl", hash = "sha256:d62a0163eb4c2344ac042ab2bdf75399a71a2d8c7d47eac2e2ee91b9d6339569"},
