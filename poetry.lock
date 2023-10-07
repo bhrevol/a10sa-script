@@ -562,11 +562,11 @@ virtualenv = ">=20.0.8"
 
 [[package]]
 name = "pre-commit-hooks"
-version = "4.3.0"
+version = "4.5.0"
 description = "Some out-of-the-box hooks for pre-commit."
 category = "dev"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 
 [package.dependencies]
 "ruamel.yaml" = ">=0.15"
@@ -1297,6 +1297,7 @@ jinja2 = [
     {file = "Jinja2-3.1.2.tar.gz", hash = "sha256:31351a702a408a9e7595a8fc6150fc3f43bb6bf7e319770cbc0db9df9437e852"},
 ]
 livereload = [
+    {file = "livereload-2.6.3-py2.py3-none-any.whl", hash = "sha256:ad4ac6f53b2d62bb6ce1a5e6e96f1f00976a32348afedcb4b6d68df2a1d346e4"},
     {file = "livereload-2.6.3.tar.gz", hash = "sha256:776f2f865e59fde56490a56bcc6773b6917366bce0c267c60ee8aaf1a0959869"},
 ]
 loguru = [
@@ -1447,8 +1448,8 @@ pre-commit = [
     {file = "pre_commit-2.20.0.tar.gz", hash = "sha256:a978dac7bc9ec0bcee55c18a277d553b0f419d259dadb4b9418ff2d00eb43959"},
 ]
 pre-commit-hooks = [
-    {file = "pre_commit_hooks-4.3.0-py2.py3-none-any.whl", hash = "sha256:9ccaf7c98794659d345080ee1ea0256a55ae059675045eebdbbc17c0be8c7e4b"},
-    {file = "pre_commit_hooks-4.3.0.tar.gz", hash = "sha256:fda598a4c834d030727e6a615722718b47510f4bed72df4c949f95ba9f5aaf88"},
+    {file = "pre_commit_hooks-4.5.0-py2.py3-none-any.whl", hash = "sha256:b779d5c44ede9b1fda48e2d96b08e9aa5b1d2fdb8903ca09f0dbaca22d529edb"},
+    {file = "pre_commit_hooks-4.5.0.tar.gz", hash = "sha256:ffbe2af1c85ac9a7695866955680b4dee98822638b748a6f3debefad79748c8a"},
 ]
 pycodestyle = [
     {file = "pycodestyle-2.9.1-py2.py3-none-any.whl", hash = "sha256:d1735fc58b418fd7c5f658d28d943854f8a849b01a5d0a1e6f3f3fdd0166804b"},
