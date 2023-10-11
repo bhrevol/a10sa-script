@@ -2,7 +2,6 @@ from typing import Any
 from typing import Dict
 from typing import List
 
-
 class ButtplugMessage:
     SYSTEM_ID: int
     DEFAULT_ID: int
