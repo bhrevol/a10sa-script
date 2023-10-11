@@ -192,7 +192,7 @@ class VorzeLinearCommand(BaseVorzeCommand, LinearPositionCommand):
             ``device.send_linear_cmd()``.
         """
         distance = abs(self.position - round(position * self.POSITION_DIVISOR))
-        if distance == 0:
+        if distance == 0 or self.speed == 0.0:
             duration = 0.0
         else:
             duration = (
