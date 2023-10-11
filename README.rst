@@ -51,6 +51,7 @@ Supported Formats
 
 * Vorze CSV
 * Afesta/LPEG VCSX (``.bin``)
+* Funscript JSON
 
 
 Requirements
@@ -81,6 +82,16 @@ Convert VCSX ``Vorze_CycloneSA.bin`` to ``script_cyclone.csv``:
     ...     vcsx = VCSXCycloneScript.load(f)
     >>> with open("script_cyclone.csv", "wb") as f:
     ...     VorzeRotateScript(vcsx.commands).dump(f)
+
+Convert CSV ``script_piston.csv`` to ``script.funscript``:
+
+.. code:: py
+
+    >>> from a10sa_script.script import VorzePistonScript, FunscriptScript
+    >>> with open("script_piston.csv", "rb") as f:
+    ...     csv = VorzePistonScript.load(f)
+    >>> with open("script.funscript", "wb") as f:
+    ...     FunscriptScript(csv.commands).dump(f)
 
 Please see the `Command-line Reference <Usage_>`_ for details.
 
