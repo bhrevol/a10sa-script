@@ -21,7 +21,7 @@ click = ">=8.0.1"
 buttplug = "^0.3.0"
 sortedcontainers = "^2.4.0"
 typing-extensions = "^4.0.1"
-loguru = "^0.6.0"
+loguru = "^0.7.0"
 
 [tool.poetry.dev-dependencies]
 Pygments = ">=2.10.0"
