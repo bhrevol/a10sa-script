@@ -51,7 +51,7 @@ class VorzeScript(SerializableScript[_T]):
         Arguments:
             fp: A file-like object opened for writing.
         """
-        text_fp = io.TextIOWrapper(fp, newline="")
+        text_fp = io.TextIOWrapper(fp, newline="", encoding="utf-8-sig")
         try:
             writer = csv.writer(text_fp)
             writer.writerows(
@@ -75,7 +75,7 @@ class VorzeScript(SerializableScript[_T]):
             ParseError: A CSV parsing error occured.
         """
         try:
-            reader = csv.reader(io.TextIOWrapper(fp, newline=""))
+            reader = csv.reader(io.TextIOWrapper(fp, newline="", encoding="utf-8-sig"))
             return cls(
                 VorzeScriptCommand(
                     cls.offset_to_ms(int(row[0])),

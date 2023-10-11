@@ -103,7 +103,7 @@ def test_dump(
     new = tmp_path / "new.csv"
     with open(new, "wb") as f:
         script.dump(f)
-    assert new.read_text() == csv
+    assert new.read_text(encoding="utf-8-sig") == csv
 
 
 @pytest.mark.parametrize(
