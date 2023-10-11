@@ -9,7 +9,7 @@ homepage = "https://github.com/bhrevol/a10sa-script"
 repository = "https://github.com/bhrevol/a10sa-script"
 documentation = "https://a10sa-script.readthedocs.io"
 classifiers = [
-    "Development Status :: 1 - Planning",
+    "Development Status :: 3 - Alpha",
 ]
 
 [tool.poetry.urls]
