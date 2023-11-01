@@ -4,6 +4,7 @@ import json
 from typing import BinaryIO
 from typing import Dict
 from typing import List
+from typing import Optional
 
 from ..command import VorzeLinearCommand
 from ..exceptions import ParseError
@@ -40,12 +41,15 @@ class FunscriptScript(VorzeLinearScript):
             actions: List[Dict[str, int]] = []
             pos = 1.0
             for cmd in self.commands:
+                # Generate two funscript position updates for every movement
+                # (one for start position and one for end position).
                 actions.append({"at": cmd.offset, "pos": self.pos_from_vector(pos)})
                 duration, newpos = cmd.cmd.vectors(pos)[0]
                 actions.append(
                     {"at": cmd.offset + duration, "pos": self.pos_from_vector(newpos)}
                 )
                 pos = newpos
+            self._fixup_actions(actions)
             data = {
                 "version": self.FUNSCRIPT_VERSION,
                 "inverted": False,
@@ -53,6 +57,24 @@ class FunscriptScript(VorzeLinearScript):
                 "actions": actions,
             }
             json.dump(data, text_fp)
+
+    @staticmethod
+    def _fixup_actions(actions: List[Dict[str, int]]) -> None:
+        max_offset: Optional[int] = None
+        for i in range(len(actions) - 1, -1, -1):
+            action = actions[i]
+            if max_offset is None:
+                max_offset = action["at"]
+                continue
+            if action["at"] >= max_offset:
+                # For actions which are close together (i.e. high speed piston
+                # movements) speed conversion can result in durations that are
+                # computed to end past the start of the next movement. When
+                # this happens we just drop the end position update for the
+                # offending movement.
+                del actions[i]
+            else:
+                max_offset = action["at"]
 
     @classmethod
     def load(cls, fp: BinaryIO) -> "FunscriptScript":
