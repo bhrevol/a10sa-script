@@ -4,7 +4,7 @@
   "labels": ["dependencies"],
   "packageRules": [
     {
-      "matchDepTypes": ["dev-dependencies"],
+      "matchDepTypes": ["dev-dependencies", "dev"],
       "automerge": true,
       "automergeType": "pr"
     },
@@ -12,6 +12,33 @@
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true,
       "automergeType": "pr"
+    },
+    {
+      "matchPackagePatterns": ["furo", "sphinx", "xdoctest"],
+      "groupName": "docs",
+      "extends": ["schedule:weekly"]
+    },
+    {
+      "matchPackagePatterns": [
+        "pre-commit",
+        "pyupgrade"
+      ],
+      "groupName": "pre-commit",
+      "extends": ["schedule:weekly"]
+    },
+    {
+      "matchPackagePatterns": [
+        "Pygments",
+        "coverage",
+        "pytest",
+      ],
+      "groupName": "tests",
+      "extends": ["schedule:weekly"]
+    },
+    {
+      "matchPackagePatterns": ["mypy", "stubs", "safety", "typeguard"],
+      "groupName": "types",
+      "extends": ["schedule:weekly"]
     }
   ],
   "automergeStrategy": "rebase",
