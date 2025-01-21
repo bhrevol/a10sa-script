@@ -65,21 +65,32 @@ requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
 [dependency-groups]
-dev = [
-    "Pygments>=2.19.1",
+coverage = [
     "coverage[toml]>=7.6.10",
-    "darglint>=1.8.1",
+]
+docs = [
     "furo>=2024.8.6",
-    "mypy>=1.14.1",
-    "pep8-naming>=0.14.1",
-    "pre-commit>=4.1.0",
-    "pre-commit-hooks>=5.0.0",
-    "pytest>=8.3.4",
-    "pyupgrade>=3.19.1",
-    "safety>=3.2.14",
     "sphinx>=7.1.2",
     "sphinx-autobuild>=2021.3.14",
     "sphinx-click>=6.0.0",
+]
+lint = [
+    "pre-commit>=4.1.0",
+    "pyupgrade>=3.19.1",
+]
+mypy = [
+    "mypy>=1.14.1",
+]
+safety = [
+    "safety>=3.2.14",
+]
+tests = [
+    "pytest>=8.3.4",
+    "pygments>=2.19.1",
+]
+typeguard = [
     "typeguard>=4.4.1",
+]
+xdoctest = [
     "xdoctest[colors]>=1.2.0",
 ]
