@@ -48,7 +48,7 @@ def safety(session: Session) -> None:
 def mypy(session: Session) -> None:
     """Type-check using mypy."""
     session.run_always("pdm", "install", "-G", "mypy", "-G", "tests", external=True)
-    args = session.posargs or ["src", "tests", "docs/conf.py"]
+    args = session.posargs or ["stubs", "src", "tests", "docs/conf.py"]
     session.run("mypy", *args)
     if not session.posargs:
         session.run("mypy", f"--python-executable={sys.executable}", "noxfile.py")

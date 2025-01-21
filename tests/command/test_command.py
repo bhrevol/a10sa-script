@@ -15,7 +15,7 @@ def test_vibrate(speed: float) -> None:
     cmd = GenericVibrateCommand(speed)
     assert cmd.speed == cmd.speeds[0]
     with pytest.raises(ValueError):
-        assert GenericVibrateCommand.from_speeds([])  # type: ignore[arg-type]
+        assert GenericVibrateCommand.from_speeds([])
     assert cmd == GenericVibrateCommand.from_speeds(
         [SpeedSubcommand(0, speed) for speed in cmd.speeds]
     )
@@ -31,7 +31,7 @@ def test_linear(duration: int, position: float) -> None:
     assert cmd.duration == vector[0]
     assert cmd.position == vector[1]
     with pytest.raises(ValueError):
-        GenericLinearCommand.from_vectors([])  # type: ignore[arg-type]
+        GenericLinearCommand.from_vectors([])
     assert cmd == GenericLinearCommand.from_vectors(
         [LinearSubcommand(0, duration, position) for duration, position in cmd.vectors]
     )
@@ -47,7 +47,7 @@ def test_rotate(speed: float, clockwise: bool) -> None:
     assert cmd.speed == rotation[0]
     assert cmd.clockwise == rotation[1]
     with pytest.raises(ValueError):
-        GenericRotateCommand.from_rotations([])  # type: ignore[arg-type]
+        GenericRotateCommand.from_rotations([])
     assert cmd == GenericRotateCommand.from_rotations(
         [RotateSubcommand(0, speed, clockwise) for speed, clockwise in cmd.rotations]
     )
