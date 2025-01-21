@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:0115c9dcf6a7de9bed946c30f516fb261cff5a43c5685e9f41fb70eef9b79433"
+content_hash = "sha256:03b29aded057cfb3c8e15b3b88b28c18f4029a5af283629cc50ddeb4c0b5d42b"
 
 [[metadata.targets]]
 requires_python = "~=3.10"
@@ -1569,7 +1569,7 @@ name = "typing-extensions"
 version = "4.12.2"
 requires_python = ">=3.8"
 summary = "Backported and Experimental Type Hints for Python 3.8+"
-groups = ["default", "dev"]
+groups = ["dev"]
 files = [
     {file = "typing_extensions-4.12.2-py3-none-any.whl", hash = "sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d"},
     {file = "typing_extensions-4.12.2.tar.gz", hash = "sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8"},

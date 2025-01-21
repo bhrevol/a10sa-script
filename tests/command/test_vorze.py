@@ -1,6 +1,4 @@
 """Test cases for vorze commands."""
-from typing import Tuple
-from typing import Type
 
 import pytest
 from buttplug.core import LinearSubcommand
@@ -30,9 +28,9 @@ from a10sa_script.command.vorze import BaseVorzeCommand
         (VorzeRotateCommand(100, False), (1, 100)),
     ],
 )
-def test_csv(vorze: BaseVorzeCommand, row: Tuple[int]) -> None:
+def test_csv(vorze: BaseVorzeCommand, row: tuple[int]) -> None:
     """Test CSV roundtrip."""
-    cmd_cls: Type[BaseVorzeCommand] = vorze.__class__
+    cmd_cls: type[BaseVorzeCommand] = vorze.__class__
     assert vorze.to_csv() == row
     assert vorze == cmd_cls.from_csv(row)
 
@@ -56,7 +54,7 @@ def test_csv(vorze: BaseVorzeCommand, row: Tuple[int]) -> None:
 )
 def test_vcsx(vorze: VorzeVibrateCommand, data: bytes) -> None:
     """Test rotate VCSX roundtrip."""
-    cmd_cls: Type[BaseVorzeCommand] = vorze.__class__
+    cmd_cls: type[BaseVorzeCommand] = vorze.__class__
     assert vorze.to_vcsx() == data
     assert vorze == cmd_cls.from_vcsx(data)
 

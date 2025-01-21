@@ -4,12 +4,8 @@ from abc import abstractmethod
 from dataclasses import dataclass
 from typing import Any
 from typing import ClassVar
-from typing import Iterable
-from typing import List
-from typing import Tuple
-from typing import Type
+from collections.abc import Iterable
 from typing import TypeVar
-from typing import Union
 
 from buttplug.core import LinearSubcommand
 from buttplug.core import RotateSubcommand
@@ -37,7 +33,7 @@ class BaseVorzeCommand(BaseCommand):
 
     @classmethod
     @abstractmethod
-    def from_csv(cls: Type[_T], row: Iterable[Any]) -> _T:
+    def from_csv(cls: type[_T], row: Iterable[Any]) -> _T:
         """Construct command from a Vorze CSV row.
 
         Arguments:
@@ -50,7 +46,7 @@ class BaseVorzeCommand(BaseCommand):
 
     @classmethod
     @abstractmethod
-    def from_vcsx(cls: Type[_T], data: bytes) -> _T:
+    def from_vcsx(cls: type[_T], data: bytes) -> _T:
         """Construct command from LPEG VCSX data.
 
         Arguments:
@@ -76,7 +72,7 @@ class VorzeVibrateCommand(BaseVorzeCommand, VibrateCommand):
     speed: int
 
     @property
-    def speeds(self) -> List[float]:
+    def speeds(self) -> list[float]:
         """Return Buttplug VibrateCmd speeds for this command.
 
         Returns:
@@ -87,7 +83,7 @@ class VorzeVibrateCommand(BaseVorzeCommand, VibrateCommand):
 
     @classmethod
     def from_speeds(
-        cls, speeds: Union[List[SpeedSubcommand], List[float]]
+        cls, speeds: list[SpeedSubcommand] | list[float]
     ) -> "VorzeVibrateCommand":
         """Return a command instance from Buttplug VibrateCmd speeds.
 
@@ -107,13 +103,13 @@ class VorzeVibrateCommand(BaseVorzeCommand, VibrateCommand):
             speed = speed.speed
         return cls(round(speed * cls.SPEED_DIVISOR))
 
-    def to_csv(self) -> Tuple[int]:
+    def to_csv(self) -> tuple[int]:
         """Return Vorze CSV row data for this command."""
         return (self.speed,)
 
     @classmethod
     def from_csv(
-        cls: Type["VorzeVibrateCommand"], row: Iterable[Any]
+        cls: type["VorzeVibrateCommand"], row: Iterable[Any]
     ) -> "VorzeVibrateCommand":
         """Construct command from a Vorze CSV row.
 
@@ -138,7 +134,7 @@ class VorzeVibrateCommand(BaseVorzeCommand, VibrateCommand):
 
     @classmethod
     def from_vcsx(
-        cls: Type["VorzeVibrateCommand"], data: bytes
+        cls: type["VorzeVibrateCommand"], data: bytes
     ) -> "VorzeVibrateCommand":
         """Construct command from LPEG VCSX data.
 
@@ -181,7 +177,7 @@ class VorzeLinearCommand(BaseVorzeCommand, LinearPositionCommand):
     position: int
     speed: int
 
-    def vectors(self, position: float) -> List[Tuple[int, float]]:
+    def vectors(self, position: float) -> list[tuple[int, float]]:
         """Return Buttplug LinearCmd vectors for this command.
 
         Arguments:
@@ -206,7 +202,7 @@ class VorzeLinearCommand(BaseVorzeCommand, LinearPositionCommand):
     @classmethod
     def from_vectors(
         cls,
-        vectors: Union[List[LinearSubcommand], List[Tuple[int, float]]],
+        vectors: list[LinearSubcommand] | list[tuple[int, float]],
         position: float,
     ) -> "VorzeLinearCommand":
         """Return a command instance from Buttplug LinearCmd speeds.
@@ -245,13 +241,13 @@ class VorzeLinearCommand(BaseVorzeCommand, LinearPositionCommand):
                 logger.warning("Required movement below min speed (using 1).")
         return cls(newpos, speed)
 
-    def to_csv(self) -> Tuple[int, int]:
+    def to_csv(self) -> tuple[int, int]:
         """Return Vorze CSV row data for this command."""
         return self.position, self.speed
 
     @classmethod
     def from_csv(
-        cls: Type["VorzeLinearCommand"], row: Iterable[Any]
+        cls: type["VorzeLinearCommand"], row: Iterable[Any]
     ) -> "VorzeLinearCommand":
         """Construct command from a Vorze CSV row.
 
@@ -275,7 +271,7 @@ class VorzeLinearCommand(BaseVorzeCommand, LinearPositionCommand):
         return bytes(cmd)
 
     @classmethod
-    def from_vcsx(cls: Type["VorzeLinearCommand"], data: bytes) -> "VorzeLinearCommand":
+    def from_vcsx(cls: type["VorzeLinearCommand"], data: bytes) -> "VorzeLinearCommand":
         """Construct command from LPEG VCSX data.
 
         Arguments:
@@ -310,7 +306,7 @@ class VorzeRotateCommand(BaseVorzeCommand, RotateCommand):
     clockwise: bool
 
     @property
-    def rotations(self) -> List[Tuple[float, bool]]:
+    def rotations(self) -> list[tuple[float, bool]]:
         """Return Buttplug RotateCmd rotations for this command.
 
         Returns:
@@ -321,7 +317,7 @@ class VorzeRotateCommand(BaseVorzeCommand, RotateCommand):
 
     @classmethod
     def from_rotations(
-        cls, rotations: Union[List[RotateSubcommand], List[Tuple[float, bool]]]
+        cls, rotations: list[RotateSubcommand] | list[tuple[float, bool]]
     ) -> "VorzeRotateCommand":
         """Return a command instance from Buttplug RotateCmd rotations.
 
@@ -344,13 +340,13 @@ class VorzeRotateCommand(BaseVorzeCommand, RotateCommand):
             speed, clockwise = rotation
         return cls(round(speed * cls.SPEED_DIVISOR), clockwise)
 
-    def to_csv(self) -> Tuple[int, int]:
+    def to_csv(self) -> tuple[int, int]:
         """Return Vorze CSV row data for this command."""
         return 0 if self.clockwise else 1, self.speed
 
     @classmethod
     def from_csv(
-        cls: Type["VorzeRotateCommand"], row: Iterable[Any]
+        cls: type["VorzeRotateCommand"], row: Iterable[Any]
     ) -> "VorzeRotateCommand":
         """Construct command from a Vorze CSV row.
 
@@ -374,7 +370,7 @@ class VorzeRotateCommand(BaseVorzeCommand, RotateCommand):
         return bytes([cmd])
 
     @classmethod
-    def from_vcsx(cls: Type["VorzeRotateCommand"], data: bytes) -> "VorzeRotateCommand":
+    def from_vcsx(cls: type["VorzeRotateCommand"], data: bytes) -> "VorzeRotateCommand":
         """Construct command from LPEG VCSX data.
 
         Arguments:

@@ -1,7 +1,5 @@
 """Test cases for VCSX scripts."""
 import io
-from typing import List
-from typing import Type
 
 import pytest
 
@@ -76,9 +74,9 @@ CYCLONE_COMMANDS = [
     ],
 )
 def test_load(
-    script_cls: Type[VCSXScript[_T]],
+    script_cls: type[VCSXScript[_T]],
     data: bytes,
-    commands: List[VorzeScriptCommand[_T]],
+    commands: list[VorzeScriptCommand[_T]],
 ) -> None:
     """Test loading script from VCSX."""
     orig = io.BytesIO(data)
@@ -97,9 +95,9 @@ def test_load(
     ],
 )
 def test_dump(
-    script_cls: Type[VCSXScript[_T]],
+    script_cls: type[VCSXScript[_T]],
     data: bytes,
-    commands: List[VorzeScriptCommand[_T]],
+    commands: list[VorzeScriptCommand[_T]],
 ) -> None:
     """Test dumping script to VCSX."""
     script = script_cls(commands)
@@ -116,7 +114,7 @@ def test_dump(
         (VCSXCycloneScript, CYCLONE_DATA),
     ],
 )
-def test_rotate_load_invalid(script_cls: Type[VCSXScript[_T]], data: bytes) -> None:
+def test_rotate_load_invalid(script_cls: type[VCSXScript[_T]], data: bytes) -> None:
     """Test invalid VCSX parsing."""
     # invalid header magic
     orig = io.BytesIO(b"\x00")
