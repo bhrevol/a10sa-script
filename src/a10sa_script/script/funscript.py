@@ -4,8 +4,7 @@ import json
 from dataclasses import asdict
 from dataclasses import dataclass
 from typing import BinaryIO
-from typing import Iterator
-from typing import List
+from collections.abc import Iterator
 
 from ..command import VorzeLinearCommand
 from ..exceptions import ParseError
@@ -109,7 +108,7 @@ class FunscriptScript(VorzeLinearScript):
         except json.JSONDecodeError as e:
             raise ParseError("Failed to parse file as funscript JSON.") from e
         inverted = data.get("inverted", False)
-        commands: List[_SC[VorzeLinearCommand]] = []
+        commands: list[_SC[VorzeLinearCommand]] = []
         pos = 1.0
         offset = 0
         try:

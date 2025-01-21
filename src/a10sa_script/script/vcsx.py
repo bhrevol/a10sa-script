@@ -3,9 +3,7 @@ from abc import abstractmethod
 from typing import Any
 from typing import BinaryIO
 from typing import ClassVar
-from typing import Iterable
-from typing import Optional
-from typing import Type
+from collections.abc import Iterable
 
 from ..command.vorze import VorzeLinearCommand
 from ..command.vorze import VorzeRotateCommand
@@ -31,8 +29,8 @@ class VCSXScript(SerializableScript[_T]):
 
     def __init__(
         self,
-        commands: Optional[Iterable[_SC[_T]]] = None,
-        version: Optional[bytes] = None,
+        commands: Iterable[_SC[_T]] | None = None,
+        version: bytes | None = None,
         **kwargs: Any,
     ):
         """Construct a script.
@@ -47,7 +45,7 @@ class VCSXScript(SerializableScript[_T]):
 
     @classmethod
     @abstractmethod
-    def _command_cls(cls) -> Type[_T]:
+    def _command_cls(cls) -> type[_T]:
         """Return command class for this script."""
 
     def dump(self, fp: BinaryIO) -> None:
@@ -101,7 +99,7 @@ class VCSXOnaRhythmScript(VCSXScript[VorzeVibrateCommand]):
     VCSX_DEFAULT_VERSION = b"\x01\x42"
 
     @classmethod
-    def _command_cls(cls) -> Type[VorzeVibrateCommand]:
+    def _command_cls(cls) -> type[VorzeVibrateCommand]:
         """Return command class for this script."""
         return VorzeVibrateCommand
 
@@ -113,7 +111,7 @@ class VCSXPistonScript(VCSXScript[VorzeLinearCommand]):
     VCSX_DEFAULT_VERSION = b"\x02\x57\x42"
 
     @classmethod
-    def _command_cls(cls) -> Type[VorzeLinearCommand]:
+    def _command_cls(cls) -> type[VorzeLinearCommand]:
         """Return command class for this script."""
         return VorzeLinearCommand
 
@@ -125,6 +123,6 @@ class VCSXCycloneScript(VCSXScript[VorzeRotateCommand]):
     VCSX_DEFAULT_VERSION = b"\x01\x42"
 
     @classmethod
-    def _command_cls(cls) -> Type[VorzeRotateCommand]:
+    def _command_cls(cls) -> type[VorzeRotateCommand]:
         """Return command class for this script."""
         return VorzeRotateCommand

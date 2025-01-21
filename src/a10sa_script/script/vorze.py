@@ -4,10 +4,9 @@ import io
 from abc import abstractmethod
 from dataclasses import dataclass
 from typing import BinaryIO
-from typing import Type
 from typing import TypeVar
 
-from typing_extensions import TypeAlias
+from typing import TypeAlias
 
 from ..command.vorze import BaseVorzeCommand
 from ..command.vorze import VorzeLinearCommand
@@ -42,7 +41,7 @@ class VorzeScript(SerializableScript[_T]):
 
     @classmethod
     @abstractmethod
-    def _command_cls(cls) -> Type[_T]:
+    def _command_cls(cls) -> type[_T]:
         """Return command class for this script."""
 
     def dump(self, fp: BinaryIO) -> None:
@@ -105,7 +104,7 @@ class VorzeVibrateScript(VorzeScript[VorzeVibrateCommand]):
     """
 
     @classmethod
-    def _command_cls(cls) -> Type[VorzeVibrateCommand]:
+    def _command_cls(cls) -> type[VorzeVibrateCommand]:
         """Return command class for this script."""
         return VorzeVibrateCommand
 
@@ -118,7 +117,7 @@ class VorzeLinearScript(VorzeScript[VorzeLinearCommand]):
     """
 
     @classmethod
-    def _command_cls(cls) -> Type[VorzeLinearCommand]:
+    def _command_cls(cls) -> type[VorzeLinearCommand]:
         """Return command class for this script."""
         return VorzeLinearCommand
 
@@ -131,6 +130,6 @@ class VorzeRotateScript(VorzeScript[VorzeRotateCommand]):
     """
 
     @classmethod
-    def _command_cls(cls) -> Type[VorzeRotateCommand]:
+    def _command_cls(cls) -> type[VorzeRotateCommand]:
         """Return command class for this script."""
         return VorzeRotateCommand

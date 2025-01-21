@@ -2,10 +2,7 @@
 from abc import ABC
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import List
 from typing import Protocol
-from typing import Tuple
-from typing import Union
 
 from buttplug.core import LinearSubcommand
 from buttplug.core import RotateSubcommand
@@ -25,7 +22,7 @@ class VibrateCommand(Protocol):
 
     @property
     @abstractmethod
-    def speeds(self) -> List[float]:
+    def speeds(self) -> list[float]:
         """Return Buttplug VibrateCmd speeds for this command.
 
         Returns:
@@ -36,7 +33,7 @@ class VibrateCommand(Protocol):
     @classmethod
     @abstractmethod
     def from_speeds(
-        cls, speeds: Union[List[SpeedSubcommand], List[float]]
+        cls, speeds: list[SpeedSubcommand] | list[float]
     ) -> "VibrateCommand":
         """Return a command instance from Buttplug VibrateCmd speeds.
 
@@ -59,7 +56,7 @@ class GenericVibrateCommand(BaseCommand, VibrateCommand):
     speed: float
 
     @property
-    def speeds(self) -> List[float]:
+    def speeds(self) -> list[float]:
         """Return Buttplug VibrateCmd speeds for this command.
 
         Returns:
@@ -70,7 +67,7 @@ class GenericVibrateCommand(BaseCommand, VibrateCommand):
 
     @classmethod
     def from_speeds(
-        cls, speeds: Union[List[SpeedSubcommand], List[float]]
+        cls, speeds: list[SpeedSubcommand] | list[float]
     ) -> "GenericVibrateCommand":
         """Return a command instance from Buttplug VibrateCmd speeds.
 
@@ -101,7 +98,7 @@ class LinearCommand(Protocol):
 
     @property
     @abstractmethod
-    def vectors(self) -> List[Tuple[int, float]]:
+    def vectors(self) -> list[tuple[int, float]]:
         """Return Buttplug LinearCmd vectors for this command.
 
         Returns:
@@ -112,7 +109,7 @@ class LinearCommand(Protocol):
     @classmethod
     @abstractmethod
     def from_vectors(
-        cls, vectors: Union[List[LinearSubcommand], List[Tuple[int, float]]]
+        cls, vectors: list[LinearSubcommand] | list[tuple[int, float]]
     ) -> "LinearCommand":
         """Return a command instance from Buttplug LinearCmd speeds.
 
@@ -132,7 +129,7 @@ class LinearPositionCommand(Protocol):
     """
 
     @abstractmethod
-    def vectors(self, position: float) -> List[Tuple[int, float]]:
+    def vectors(self, position: float) -> list[tuple[int, float]]:
         """Return Buttplug LinearCmd vectors for this command.
 
         Arguments:
@@ -147,7 +144,7 @@ class LinearPositionCommand(Protocol):
     @abstractmethod
     def from_vectors(
         cls,
-        vectors: Union[List[LinearSubcommand], List[Tuple[int, float]]],
+        vectors: list[LinearSubcommand] | list[tuple[int, float]],
         position: float,
     ) -> "LinearPositionCommand":
         """Return a command instance from Buttplug LinearCmd speeds.
@@ -174,7 +171,7 @@ class GenericLinearCommand(BaseCommand, LinearCommand):
     position: float
 
     @property
-    def vectors(self) -> List[Tuple[int, float]]:
+    def vectors(self) -> list[tuple[int, float]]:
         """Return Buttplug LinearCmd vectors for this command.
 
         Returns:
@@ -185,7 +182,7 @@ class GenericLinearCommand(BaseCommand, LinearCommand):
 
     @classmethod
     def from_vectors(
-        cls, vectors: Union[List[LinearSubcommand], List[Tuple[int, float]]]
+        cls, vectors: list[LinearSubcommand] | list[tuple[int, float]]
     ) -> "GenericLinearCommand":
         """Return a command instance from Buttplug LinearCmd speeds.
 
@@ -215,7 +212,7 @@ class RotateCommand(Protocol):
 
     @property
     @abstractmethod
-    def rotations(self) -> List[Tuple[float, bool]]:
+    def rotations(self) -> list[tuple[float, bool]]:
         """Return Buttplug RotateCmd rotations for this command.
 
         Returns:
@@ -226,7 +223,7 @@ class RotateCommand(Protocol):
     @classmethod
     @abstractmethod
     def from_rotations(
-        cls, rotations: Union[List[RotateSubcommand], List[Tuple[float, bool]]]
+        cls, rotations: list[RotateSubcommand] | list[tuple[float, bool]]
     ) -> "RotateCommand":
         """Return a command instance from Buttplug RotateCmd rotations.
 
@@ -251,7 +248,7 @@ class GenericRotateCommand(BaseCommand, RotateCommand):
     clockwise: bool
 
     @property
-    def rotations(self) -> List[Tuple[float, bool]]:
+    def rotations(self) -> list[tuple[float, bool]]:
         """Return Buttplug RotateCmd rotations for this command.
 
         Returns:
@@ -262,7 +259,7 @@ class GenericRotateCommand(BaseCommand, RotateCommand):
 
     @classmethod
     def from_rotations(
-        cls, rotations: Union[List[RotateSubcommand], List[Tuple[float, bool]]]
+        cls, rotations: list[RotateSubcommand] | list[tuple[float, bool]]
     ) -> "GenericRotateCommand":
         """Return a command instance from Buttplug RotateCmd rotations.
 

@@ -4,16 +4,14 @@ from dataclasses import dataclass
 from typing import Any
 from typing import BinaryIO
 from typing import Generic
-from typing import Iterable
-from typing import Iterator
-from typing import MutableSequence
-from typing import Optional
+from collections.abc import Iterable
+from collections.abc import Iterator
+from collections.abc import MutableSequence
 from typing import TypeVar
-from typing import Union
 from typing import overload
 
 from sortedcontainers import SortedList
-from typing_extensions import TypeAlias
+from typing import TypeAlias
 
 from ..command import BaseCommand
 
@@ -42,7 +40,7 @@ class BaseScript(MutableSequence[_SC[_T]]):
 
     def __init__(
         self,
-        commands: Optional[Iterable[_SC[_T]]] = None,
+        commands: Iterable[_SC[_T]] | None = None,
         **kwargs: Any,
     ):
         """Construct a script.
@@ -61,19 +59,17 @@ class BaseScript(MutableSequence[_SC[_T]]):
     def __getitem__(self, key: slice) -> MutableSequence[_SC[_T]]:
         ...
 
-    def __getitem__(
-        self, key: Union[int, slice]
-    ) -> Union[_SC[_T], MutableSequence[_SC[_T]]]:
+    def __getitem__(self, key: int | slice) -> _SC[_T] | MutableSequence[_SC[_T]]:
         return self.commands[key]
 
     def __setitem__(
         self,
-        key: Union[int, slice],
-        value: Union[_SC[_T], Iterable[_SC[_T]]],
+        key: int | slice,
+        value: _SC[_T] | Iterable[_SC[_T]],
     ) -> None:
         raise NotImplementedError
 
-    def __delitem__(self, key: Union[int, slice]) -> None:
+    def __delitem__(self, key: int | slice) -> None:
         del self.commands[key]
 
     def __len__(self) -> int:

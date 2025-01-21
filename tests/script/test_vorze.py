@@ -1,8 +1,6 @@
 """Test cases for Vorze scripts."""
 import io
 from pathlib import Path
-from typing import List
-from typing import Type
 
 import pytest
 
@@ -74,7 +72,7 @@ ROTATE_COMMANDS = [
     ],
 )
 def test_load(
-    script_cls: Type[VorzeScript[_T]], csv: str, commands: List[VorzeScriptCommand[_T]]
+    script_cls: type[VorzeScript[_T]], csv: str, commands: list[VorzeScriptCommand[_T]]
 ) -> None:
     """Test loading script from CSV."""
     orig = io.BytesIO(csv.encode("ascii"))
@@ -93,9 +91,9 @@ def test_load(
     ],
 )
 def test_dump(
-    script_cls: Type[VorzeScript[_T]],
+    script_cls: type[VorzeScript[_T]],
     csv: str,
-    commands: List[VorzeScriptCommand[_T]],
+    commands: list[VorzeScriptCommand[_T]],
     tmp_path: Path,
 ) -> None:
     """Test dumping script to CSV."""
@@ -109,7 +107,7 @@ def test_dump(
 @pytest.mark.parametrize(
     "script_cls", [VorzeVibrateScript, VorzeLinearScript, VorzeRotateScript]
 )
-def test_load_invalid(script_cls: Type[VorzeScript[_T]]) -> None:
+def test_load_invalid(script_cls: type[VorzeScript[_T]]) -> None:
     """Test invalid CSV parsing."""
     orig = io.BytesIO(b"\x00")
     with pytest.raises(ParseError):

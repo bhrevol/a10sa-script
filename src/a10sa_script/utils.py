@@ -2,7 +2,7 @@
 from typing import Literal
 from typing import Union
 
-from typing_extensions import TypeAlias
+from typing import TypeAlias
 
 
 _ByteOrder: TypeAlias = Union[Literal["little"], Literal["big"]]
