@@ -56,7 +56,9 @@ class RotateCmd(ButtplugDeviceMessage):
     rotations: List[RotateSubcommand]
     @staticmethod
     def from_dict(d: Dict[Any, Any]) -> RotateCmd: ...
-    def __init__(self, device_index: int, rotations: List[RotateSubcommand]) -> None: ...
+    def __init__(
+        self, device_index: int, rotations: List[RotateSubcommand]
+    ) -> None: ...
 
 class LinearSubcommand:
     index: int
