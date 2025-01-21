@@ -72,7 +72,7 @@ def test_vibrate_buttplug(vorze: VorzeVibrateCommand, buttplug_speed: float) -> 
     speed = vorze.speeds[0]
     assert speed == buttplug_speed
     with pytest.raises(ValueError):
-        VorzeVibrateCommand.from_speeds([])  # type: ignore[arg-type]
+        VorzeVibrateCommand.from_speeds([])
     assert vorze == VorzeVibrateCommand.from_speeds(vorze.speeds)
     assert vorze == VorzeVibrateCommand.from_speeds(
         [SpeedSubcommand(0, speed) for speed in vorze.speeds]
@@ -99,7 +99,7 @@ def test_linear_buttplug(
     vector = vorze.vectors(curpos)[0]
     assert vector == (buttplug_duration, buttplug_pos)
     with pytest.raises(ValueError):
-        VorzeLinearCommand.from_vectors([], curpos)  # type: ignore[arg-type]
+        VorzeLinearCommand.from_vectors([], curpos)
     assert vorze == VorzeLinearCommand.from_vectors(vorze.vectors(curpos), curpos)
     assert vorze == VorzeLinearCommand.from_vectors(
         [
@@ -136,7 +136,7 @@ def test_rotate_buttplug(vorze: VorzeRotateCommand, buttplug_speed: float) -> No
     rotation = vorze.rotations[0]
     assert rotation == (buttplug_speed, vorze.clockwise)
     with pytest.raises(ValueError):
-        VorzeRotateCommand.from_rotations([])  # type: ignore[arg-type]
+        VorzeRotateCommand.from_rotations([])
     assert vorze == VorzeRotateCommand.from_rotations(
         [RotateSubcommand(0, speed, clockwise) for speed, clockwise in vorze.rotations]
     )
