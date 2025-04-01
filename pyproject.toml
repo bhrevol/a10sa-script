@@ -25,6 +25,10 @@ documentation = "https://a10sa-script.readthedocs.io"
 [project.scripts]
 a10sa-script = "a10sa_script.__main__:main"
 
+[project.optional-dependencies]
+ble = [
+    "bleak>=0.22.3; python_version < \"3.14\"",
+]
 [tool.coverage.paths]
 source = ["src", "*/site-packages"]
 tests = ["tests", "*/tests"]
