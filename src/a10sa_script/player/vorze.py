@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, TypeVar
 from loguru import logger
 
 from .player import ScriptPlayer
-from ..command.vorze import BaseVorzeCommand, VorzeRotateCommand
+from ..command.vorze import BaseVorzeCommand, VorzeLinearCommand, VorzeRotateCommand
 
 if TYPE_CHECKING:
     from bleak.backends.device import BLEDevice
@@ -134,3 +134,15 @@ class VorzeCyclonePlayer(VorzeScriptPlayer[VorzeRotateCommand]):
 class VorzeUFOPlayer(VorzeCyclonePlayer):
     DEVICE_ID = DeviceID.UFO_SA
     LOCAL_NAMES = {"UFOSA", "UFO-TW"}
+
+
+class VorzePistonPlayer(VorzeScriptPlayer[VorzeLinearCommand]):
+    DEVICE_ID = DeviceID.PISTON_SA
+    LOCAL_NAMES = {"VorzePiston"}
+
+    async def send(self, command: VorzeLinearCommand) -> None:
+        logger.debug("Move {}", command)
+        await self._send_command([command.position, command.speed])
+
+    async def reset(self) -> None:
+        await self.send(VorzeLinearCommand(0, 10))

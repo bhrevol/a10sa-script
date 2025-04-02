@@ -146,3 +146,6 @@ class ScriptPlayer(AbstractAsyncContextManager["ScriptPlayer[T]"]):
     async def send(self, command: T) -> None:
         """Send command to the playback device."""
         ...
+
+    async def reset(self) -> None:
+        """Reset the playback device to a default state and/or position."""
