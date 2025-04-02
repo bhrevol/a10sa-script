@@ -5,7 +5,7 @@
 groups = ["default", "ble", "coverage", "docs", "lint", "mypy", "safety", "tests", "typeguard", "xdoctest"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:ec847a20a24823b0056b548e6de278d3b4c9e771e2502a3cb439e64ed9827b5d"
+content_hash = "sha256:db39d42777c4c720537da2c99cab7d64acf1823900eb0477c9063356177e3912"
 
 [[metadata.targets]]
 requires_python = "~=3.10"
@@ -153,15 +153,17 @@ files = [
 ]
 
 [[package]]
-name = "buttplug"
-version = "0.3.0"
-summary = "Python implementation of the Buttplug Intimate Hardware Control Protocol."
+name = "buttplug-py"
+version = "0.2.0"
+requires_python = ">=3.9"
+summary = "Python client implementation of the Buttplug Intimate Hardware Control Protocol."
 groups = ["default"]
 dependencies = [
-    "websockets>=10",
+    "websockets>=10.4",
 ]
 files = [
-    {file = "buttplug-0.3.0.tar.gz", hash = "sha256:2b75cc1183882cf868121229f6c6a5b7f08019d49160ae8e2abd3b6e36638c74"},
+    {file = "buttplug-py-0.2.0.tar.gz", hash = "sha256:44a1eac94a3a050264d0356efc6802e13e6d782d6064164d6d24c7cebabe14a3"},
+    {file = "buttplug_py-0.2.0-py3-none-any.whl", hash = "sha256:29f14fb9f7ae13050b19f33e1b2fbda052c785607adea69cec6ffb8ae77817ff"},
 ]
 
 [[package]]
