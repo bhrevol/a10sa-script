@@ -1,0 +1,45 @@
+from .base import ButtplugError as ButtplugError
+from .client import (
+    ClientError as ClientError,
+    ConnectorError as ConnectorError,
+    DisconnectedError as DisconnectedError,
+    InvalidAddressError as InvalidAddressError,
+    InvalidHandshakeError as InvalidHandshakeError,
+    ReconnectError as ReconnectError,
+    ScanNotRunningError as ScanNotRunningError,
+    ServerNotFoundError as ServerNotFoundError,
+    UnexpectedMessageError as UnexpectedMessageError,
+    UnsupportedCommandError as UnsupportedCommandError,
+    WebsocketTimeoutError as WebsocketTimeoutError,
+)
+from .server import (
+    DeviceServerError as DeviceServerError,
+    ErrorCode as ErrorCode,
+    InitServerError as InitServerError,
+    MessageServerError as MessageServerError,
+    PingServerError as PingServerError,
+    ServerError as ServerError,
+    UnknownServerError as UnknownServerError,
+)
+
+__all__ = [
+    "ButtplugError",
+    "ClientError",
+    "ReconnectError",
+    "ScanNotRunningError",
+    "UnsupportedCommandError",
+    "UnexpectedMessageError",
+    "ConnectorError",
+    "InvalidAddressError",
+    "ServerNotFoundError",
+    "InvalidHandshakeError",
+    "WebsocketTimeoutError",
+    "DisconnectedError",
+    "ServerError",
+    "UnknownServerError",
+    "InitServerError",
+    "PingServerError",
+    "MessageServerError",
+    "DeviceServerError",
+    "ErrorCode",
+]

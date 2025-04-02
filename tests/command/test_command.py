@@ -1,8 +1,7 @@
 """Test cases for generic commands."""
 import pytest
-from buttplug.core import LinearSubcommand
-from buttplug.core import RotateSubcommand
-from buttplug.core import SpeedSubcommand
+from buttplug.messages.v1 import Rotation, Vector
+from buttplug.messages.v3 import Scalar
 
 from a10sa_script.command import GenericLinearCommand
 from a10sa_script.command import GenericRotateCommand
@@ -17,7 +16,7 @@ def test_vibrate(speed: float) -> None:
     with pytest.raises(ValueError):
         assert GenericVibrateCommand.from_speeds([])
     assert cmd == GenericVibrateCommand.from_speeds(
-        [SpeedSubcommand(0, speed) for speed in cmd.speeds]
+        [Scalar(0, speed, "Vibrate") for speed in cmd.speeds]
     )
     assert cmd == GenericVibrateCommand.from_speeds(cmd.speeds)
 
@@ -33,7 +32,7 @@ def test_linear(duration: int, position: float) -> None:
     with pytest.raises(ValueError):
         GenericLinearCommand.from_vectors([])
     assert cmd == GenericLinearCommand.from_vectors(
-        [LinearSubcommand(0, duration, position) for duration, position in cmd.vectors]
+        [Vector(0, duration, position) for duration, position in cmd.vectors]
     )
     assert cmd == GenericLinearCommand.from_vectors(cmd.vectors)
 
@@ -49,6 +48,6 @@ def test_rotate(speed: float, clockwise: bool) -> None:
     with pytest.raises(ValueError):
         GenericRotateCommand.from_rotations([])
     assert cmd == GenericRotateCommand.from_rotations(
-        [RotateSubcommand(0, speed, clockwise) for speed, clockwise in cmd.rotations]
+        [Rotation(0, speed, clockwise) for speed, clockwise in cmd.rotations]
     )
     assert cmd == GenericRotateCommand.from_rotations(cmd.rotations)

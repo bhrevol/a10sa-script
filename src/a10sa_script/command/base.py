@@ -4,9 +4,8 @@ from abc import abstractmethod
 from dataclasses import dataclass
 from typing import Protocol
 
-from buttplug.core import LinearSubcommand
-from buttplug.core import RotateSubcommand
-from buttplug.core import SpeedSubcommand
+from buttplug.messages.v1 import Rotation, Vector
+from buttplug.messages.v3 import Scalar
 
 
 class BaseCommand(ABC):  # noqa: B024
@@ -32,9 +31,7 @@ class VibrateCommand(Protocol):
 
     @classmethod
     @abstractmethod
-    def from_speeds(
-        cls, speeds: list[SpeedSubcommand] | list[float]
-    ) -> "VibrateCommand":
+    def from_speeds(cls, speeds: list[Scalar] | list[float]) -> "VibrateCommand":
         """Return a command instance from Buttplug VibrateCmd speeds.
 
         Arguments:
@@ -66,9 +63,7 @@ class GenericVibrateCommand(BaseCommand, VibrateCommand):
         return [self.speed]
 
     @classmethod
-    def from_speeds(
-        cls, speeds: list[SpeedSubcommand] | list[float]
-    ) -> "GenericVibrateCommand":
+    def from_speeds(cls, speeds: list[Scalar] | list[float]) -> "GenericVibrateCommand":
         """Return a command instance from Buttplug VibrateCmd speeds.
 
         Arguments:
@@ -84,8 +79,8 @@ class GenericVibrateCommand(BaseCommand, VibrateCommand):
             raise ValueError("Vibrate speeds cannot be empty.")
 
         speed = speeds[0]
-        if isinstance(speed, SpeedSubcommand):
-            speed = speed.speed
+        if isinstance(speed, Scalar):
+            speed = speed.scalar
         return cls(speed)
 
 
@@ -109,7 +104,7 @@ class LinearCommand(Protocol):
     @classmethod
     @abstractmethod
     def from_vectors(
-        cls, vectors: list[LinearSubcommand] | list[tuple[int, float]]
+        cls, vectors: list[Vector] | list[tuple[int, float]]
     ) -> "LinearCommand":
         """Return a command instance from Buttplug LinearCmd speeds.
 
@@ -144,7 +139,7 @@ class LinearPositionCommand(Protocol):
     @abstractmethod
     def from_vectors(
         cls,
-        vectors: list[LinearSubcommand] | list[tuple[int, float]],
+        vectors: list[Vector] | list[tuple[int, float]],
         position: float,
     ) -> "LinearPositionCommand":
         """Return a command instance from Buttplug LinearCmd speeds.
@@ -182,7 +177,7 @@ class GenericLinearCommand(BaseCommand, LinearCommand):
 
     @classmethod
     def from_vectors(
-        cls, vectors: list[LinearSubcommand] | list[tuple[int, float]]
+        cls, vectors: list[Vector] | list[tuple[int, float]]
     ) -> "GenericLinearCommand":
         """Return a command instance from Buttplug LinearCmd speeds.
 
@@ -198,7 +193,7 @@ class GenericLinearCommand(BaseCommand, LinearCommand):
         if not vectors:
             raise ValueError("Linear vectors cannot be empty.")
         vector = vectors[0]
-        if isinstance(vector, LinearSubcommand):
+        if isinstance(vector, Vector):
             vector = (vector.duration, vector.position)
         return cls(*vector)
 
@@ -223,7 +218,7 @@ class RotateCommand(Protocol):
     @classmethod
     @abstractmethod
     def from_rotations(
-        cls, rotations: list[RotateSubcommand] | list[tuple[float, bool]]
+        cls, rotations: list[Rotation] | list[tuple[float, bool]]
     ) -> "RotateCommand":
         """Return a command instance from Buttplug RotateCmd rotations.
 
@@ -259,7 +254,7 @@ class GenericRotateCommand(BaseCommand, RotateCommand):
 
     @classmethod
     def from_rotations(
-        cls, rotations: list[RotateSubcommand] | list[tuple[float, bool]]
+        cls, rotations: list[Rotation] | list[tuple[float, bool]]
     ) -> "GenericRotateCommand":
         """Return a command instance from Buttplug RotateCmd rotations.
 
@@ -275,6 +270,6 @@ class GenericRotateCommand(BaseCommand, RotateCommand):
         if not rotations:
             raise ValueError("Rotations cannot be empty.")
         rotation = rotations[0]
-        if isinstance(rotation, RotateSubcommand):
+        if isinstance(rotation, Rotation):
             rotation = (rotation.speed, rotation.clockwise)
         return cls(*rotation)

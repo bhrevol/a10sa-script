@@ -1,9 +1,8 @@
 """Test cases for vorze commands."""
 
 import pytest
-from buttplug.core import LinearSubcommand
-from buttplug.core import RotateSubcommand
-from buttplug.core import SpeedSubcommand
+from buttplug.messages.v1 import Rotation, Vector
+from buttplug.messages.v3 import Scalar
 
 from a10sa_script.command import VorzeLinearCommand
 from a10sa_script.command import VorzeRotateCommand
@@ -75,7 +74,7 @@ def test_vibrate_buttplug(vorze: VorzeVibrateCommand, buttplug_speed: float) -> 
         VorzeVibrateCommand.from_speeds([])
     assert vorze == VorzeVibrateCommand.from_speeds(vorze.speeds)
     assert vorze == VorzeVibrateCommand.from_speeds(
-        [SpeedSubcommand(0, speed) for speed in vorze.speeds]
+        [Scalar(0, speed, "Vibrate") for speed in vorze.speeds]
     )
 
 
@@ -102,10 +101,7 @@ def test_linear_buttplug(
         VorzeLinearCommand.from_vectors([], curpos)
     assert vorze == VorzeLinearCommand.from_vectors(vorze.vectors(curpos), curpos)
     assert vorze == VorzeLinearCommand.from_vectors(
-        [
-            LinearSubcommand(0, duration, position)
-            for duration, position in vorze.vectors(curpos)
-        ],
+        [Vector(0, duration, position) for duration, position in vorze.vectors(curpos)],
         curpos,
     )
 
@@ -138,6 +134,6 @@ def test_rotate_buttplug(vorze: VorzeRotateCommand, buttplug_speed: float) -> No
     with pytest.raises(ValueError):
         VorzeRotateCommand.from_rotations([])
     assert vorze == VorzeRotateCommand.from_rotations(
-        [RotateSubcommand(0, speed, clockwise) for speed, clockwise in vorze.rotations]
+        [Rotation(0, speed, clockwise) for speed, clockwise in vorze.rotations]
     )
     assert vorze == VorzeRotateCommand.from_rotations(vorze.rotations)

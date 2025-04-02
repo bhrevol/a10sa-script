@@ -7,9 +7,8 @@ from typing import ClassVar
 from collections.abc import Iterable
 from typing import TypeVar
 
-from buttplug.core import LinearSubcommand
-from buttplug.core import RotateSubcommand
-from buttplug.core import SpeedSubcommand
+from buttplug.messages.v1 import Rotation, Vector
+from buttplug.messages.v3 import Scalar
 from loguru import logger
 
 from .base import BaseCommand
@@ -82,9 +81,7 @@ class VorzeVibrateCommand(BaseVorzeCommand, VibrateCommand):
         return [self.speed / self.SPEED_DIVISOR]
 
     @classmethod
-    def from_speeds(
-        cls, speeds: list[SpeedSubcommand] | list[float]
-    ) -> "VorzeVibrateCommand":
+    def from_speeds(cls, speeds: list[Scalar] | list[float]) -> "VorzeVibrateCommand":
         """Return a command instance from Buttplug VibrateCmd speeds.
 
         Arguments:
@@ -99,8 +96,8 @@ class VorzeVibrateCommand(BaseVorzeCommand, VibrateCommand):
         if not speeds:
             raise ValueError("Vibrate speeds cannot be empty.")
         speed = speeds[0]
-        if isinstance(speed, SpeedSubcommand):
-            speed = speed.speed
+        if isinstance(speed, Scalar):
+            speed = speed.scalar
         return cls(round(speed * cls.SPEED_DIVISOR))
 
     def to_csv(self) -> tuple[int]:
@@ -202,7 +199,7 @@ class VorzeLinearCommand(BaseVorzeCommand, LinearPositionCommand):
     @classmethod
     def from_vectors(
         cls,
-        vectors: list[LinearSubcommand] | list[tuple[int, float]],
+        vectors: list[Vector] | list[tuple[int, float]],
         position: float,
     ) -> "VorzeLinearCommand":
         """Return a command instance from Buttplug LinearCmd speeds.
@@ -219,7 +216,7 @@ class VorzeLinearCommand(BaseVorzeCommand, LinearPositionCommand):
         """
         if not vectors:
             raise ValueError("Linear vectors cannot be empty.")
-        if isinstance(vectors[0], LinearSubcommand):
+        if isinstance(vectors[0], Vector):
             duration = vectors[0].duration
             new_position = vectors[0].position
         else:
@@ -317,7 +314,7 @@ class VorzeRotateCommand(BaseVorzeCommand, RotateCommand):
 
     @classmethod
     def from_rotations(
-        cls, rotations: list[RotateSubcommand] | list[tuple[float, bool]]
+        cls, rotations: list[Rotation] | list[tuple[float, bool]]
     ) -> "VorzeRotateCommand":
         """Return a command instance from Buttplug RotateCmd rotations.
 
@@ -333,7 +330,7 @@ class VorzeRotateCommand(BaseVorzeCommand, RotateCommand):
         if not rotations:
             raise ValueError("Rotations cannot be empty.")
         rotation = rotations[0]
-        if isinstance(rotation, RotateSubcommand):
+        if isinstance(rotation, Rotation):
             speed = rotation.speed
             clockwise = rotation.clockwise
         else:

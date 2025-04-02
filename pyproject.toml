@@ -6,9 +6,9 @@ authors = [
 ]
 dependencies = [
     "click>=8.1.8",
-    "buttplug>=0.3.0",
     "sortedcontainers>=2.4.0",
     "loguru>=0.7.3",
+    "buttplug-py>=0.2.0",
 ]
 requires-python = "<4.0,>=3.10"
 readme = "README.rst"
@@ -55,6 +55,10 @@ show_column_numbers = true
 show_error_codes = true
 show_error_context = true
 
+[[tool.mypy.overrides]]
+module = "buttplug.*"
+ignore_errors = true
+
 [tool.pdm]
 distribution = true
 
@@ -63,6 +67,9 @@ includes = []
 
 [tool.pdm.version]
 source = "scm"
+
+[tool.ruff.lint.per-file-ignores]
+"stubs/**.pyi" = ["F403", "F405"]
 
 [build-system]
 requires = ["pdm-backend"]
