@@ -44,7 +44,18 @@ Features
 * Read/Write/Convert supported script formats.
 * Export scripts as `Buttplug Protocol`_ command sequences.
 
+Experimental features
+---------------------
+
+**Experimental features are not fully tested, use at your own risk.**
+
+* Control Vorze devices directly via BluetoothLE (tested with CycloneSA, untested for UFOSA, UFO-TW, PistonSA).
+* Control linear/funscript devices via `Buttplug Protocol`_ (requires `Intiface Central`_, tested with Handy).
+
+*Bluetooth functionality requires installation with ``[ble]`` dependencies.*
+
 .. _Buttplug Protocol: https://buttplug.io/
+.. _Intiface Central: https://intiface.com/
 
 Supported Formats
 -----------------
@@ -69,6 +80,12 @@ You can install *A10SA Script* via pip_ from PyPI_:
 
    $ pip install a10sa-script
 
+Optional dependencies can also be installed to enable experimental feature support:
+
+.. code:: console
+
+    $ pip install a10sa-script[ble]
+
 
 Usage
 -----
@@ -87,11 +104,21 @@ Convert CSV ``script_piston.csv`` to ``script.funscript``:
 
 .. code:: py
 
-    >>> from a10sa_script.script import VorzePistonScript, FunscriptScript
+    >>> from a10sa_script.script import VorzeLinearScript, FunscriptScript
     >>> with open("script_piston.csv", "rb") as f:
-    ...     csv = VorzePistonScript.load(f)
+    ...     csv = VorzeLinearScript.load(f)
     >>> with open("script.funscript", "wb") as f:
-    ...     FunscriptScript(csv.commands).dump(f)
+    ...     FunscriptScript.from_vorze(csv).dump(f)
+
+Convert funscript ``script.funscript`` to ``script_piston.csv``:
+
+.. code:: py
+
+    >>> from a10sa_script.script import VorzeLinearScript, FunscriptScript
+    >>> with open("script.funscript", "rb") as f:
+    ...     funscript = FunscriptScript.load(f)
+    >>> with open("script_piston.csv", "wb") as f:
+    ...     funscript.to_vorze().dump(f)
 
 Please see the `Command-line Reference <Usage_>`_ for details.
 
