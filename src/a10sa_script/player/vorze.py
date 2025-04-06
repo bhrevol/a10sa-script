@@ -123,9 +123,27 @@ class VorzeScriptPlayer(ScriptPlayer[T]):
 
 
 class VorzeCyclonePlayer(VorzeScriptPlayer[VorzeRotateCommand]):
+    def __init__(self, speed_multiplier: float = 1.0) -> None:
+        if speed_multiplier < 0.0:
+            raise ValueError("multiplier must be >= 0")
+        super().__init__()
+        self._speed_multiplier = speed_multiplier
+
+    @property
+    def speed_multiplier(self) -> float:
+        return self._speed_multiplier
+
+    @speed_multiplier.setter
+    def speed_multiplier(self, value: float) -> None:
+        if 0.0 <= value:
+            self._speed_multiplier = value
+        else:
+            raise ValueError("multiplier must be >= 0")
+
     async def send(self, command: VorzeRotateCommand) -> None:
         logger.debug("Rotate {}", command)
-        await self._send_command([0x01, (not command.clockwise) << 7 | command.speed])
+        speed = max(0, min(100, round(command.speed * self.speed_multiplier)))
+        await self._send_command([0x01, (not command.clockwise) << 7 | speed])
 
     async def reset(self) -> None:
         await self.send(VorzeRotateCommand(0, True))
@@ -133,16 +151,34 @@ class VorzeCyclonePlayer(VorzeScriptPlayer[VorzeRotateCommand]):
 
 class VorzeUFOPlayer(VorzeCyclonePlayer):
     DEVICE_ID = DeviceID.UFO_SA
-    LOCAL_NAMES = {"UFOSA", "UFO-TW"}
+    LOCAL_NAMES = {"UFOSA"}
 
 
 class VorzePistonPlayer(VorzeScriptPlayer[VorzeLinearCommand]):
     DEVICE_ID = DeviceID.PISTON_SA
     LOCAL_NAMES = {"VorzePiston"}
 
+    def __init__(self, speed_multiplier: float = 1.0) -> None:
+        if speed_multiplier < 0.0:
+            raise ValueError("multiplier must be >= 0")
+        super().__init__()
+        self.speed_multiplier = 1.0
+
+    @property
+    def speed_multiplier(self) -> float:
+        return self._speed_multiplier
+
+    @speed_multiplier.setter
+    def speed_multiplier(self, value: float) -> None:
+        if 0.0 <= value:
+            self._speed_multiplier = value
+        else:
+            raise ValueError("multiplier must be >= 0")
+
     async def send(self, command: VorzeLinearCommand) -> None:
         logger.debug("Move {}", command)
-        await self._send_command([command.position, command.speed])
+        speed = max(0, min(100, round(command.speed * self.speed_multiplier)))
+        await self._send_command([command.position, speed])
 
     async def reset(self) -> None:
         await self.send(VorzeLinearCommand(0, 10))
