@@ -44,6 +44,24 @@ class FunscriptScript(SerializableScript[GenericLinearCommand]):
         super().__init__(*args, **kwargs)
         self.inverted = inverted
 
+    @property
+    def initial_position(self) -> float:
+        """Return initial position for this script.
+
+        Funjack spec defines the default position for non-inverted scripts to be the
+        bottom (entrance) end of the device. For inverted scripts, it defaults to the
+        opposite end of the device. Some scripts define an explicit initial position at
+        time offset 0.
+        """
+        try:
+            initial_cmd = self.commands[0]
+            linear_cmd = initial_cmd.cmd
+            if initial_cmd.offset == 0 and linear_cmd.duration == 0:
+                return linear_cmd.position
+        except IndexError:
+            pass
+        return 1.0 if self.inverted else 0.0
+
     def dump(self, fp: BinaryIO) -> None:
         """Serialize script to file.
 
@@ -65,7 +83,7 @@ class FunscriptScript(SerializableScript[GenericLinearCommand]):
         Yields:
             Funscript actions in order.
         """
-        pos = 1.0 if self.inverted else 0.0
+        pos = self.initial_position
         offset = 0
         for i, cmd in enumerate(self.commands):
             if cmd.offset != offset:
@@ -151,8 +169,13 @@ class FunscriptScript(SerializableScript[GenericLinearCommand]):
             Conversion will result in loss of resolution due to the conversion between
             Buttplug duration and Piston speed.
         """
-        pos = 1.0 if inverted else 0.0
         commands: list[ScriptCommand[GenericLinearCommand]] = []
+        pos = 1.0
+        if not inverted:
+            # Vorze scripts always start at the top of the device. Funscript defaults to
+            # bottom of the device for non-inverted scripts, so we insert an explicit
+            # initial position at offset 0.
+            commands.append(ScriptCommand(0, GenericLinearCommand(0, pos)))
         for cmd in script.commands:
             piston_cmd = cmd.cmd
             vectors = piston_cmd.vectors(pos)
@@ -174,11 +197,12 @@ class FunscriptScript(SerializableScript[GenericLinearCommand]):
             logger.warning(
                 "Converting inverted funscript, Vorze CSV will not be inverted."
             )
-        pos = 1.0 if self.inverted else 0.0
+        pos = self.initial_position
         commands: list[ScriptCommand[VorzeLinearCommand]] = []
         for i, cmd in enumerate(self.commands):
             linear_cmd = cmd.cmd
-            piston_cmd = VorzeLinearCommand.from_vectors(linear_cmd.vectors, pos)
-            commands.append(VorzeScriptCommand(cmd.offset, piston_cmd))
+            if linear_cmd.duration:
+                piston_cmd = VorzeLinearCommand.from_vectors(linear_cmd.vectors, pos)
+                commands.append(VorzeScriptCommand(cmd.offset, piston_cmd))
             pos = linear_cmd.position
         return VorzeLinearScript(commands)

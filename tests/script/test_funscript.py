@@ -15,19 +15,21 @@ STANDARD_FUNSCRIPT = """{
 	"inverted": false,
 	"range": 90,
 	"actions": [
-		{"pos": 0, "at": 100},
-		{"pos": 100, "at": 500},
-        {"pos": 100, "at": 1000},
-        {"pos": 25, "at": 1500}
+        {"pos": 100, "at": 0},
+		{"pos": 100, "at": 100},
+		{"pos": 0, "at": 500},
+        {"pos": 0, "at": 1000},
+        {"pos": 75, "at": 1500}
 	]
 }"""
 STANDARD_COMMANDS = [
-    ScriptCommand(100, GenericLinearCommand(400, 1.0)),
-    ScriptCommand(1000, GenericLinearCommand(500, 0.25)),
+    ScriptCommand(0, GenericLinearCommand(0, 1.0)),
+    ScriptCommand(100, GenericLinearCommand(400, 0.0)),
+    ScriptCommand(1000, GenericLinearCommand(500, 0.75)),
 ]
 STANDARD_VORZE = [
-    VorzeScriptCommand(100, VorzeLinearCommand(200, 30)),
-    VorzeScriptCommand(1000, VorzeLinearCommand(50, 16)),
+    VorzeScriptCommand(100, VorzeLinearCommand(0, 30)),
+    VorzeScriptCommand(1000, VorzeLinearCommand(150, 16)),
 ]
 
 INVERTED_FUNSCRIPT = """{
@@ -96,15 +98,16 @@ def test_dump(
         (INVERTED_COMMANDS, INVERTED_VORZE, True),
     ],
 )
-def test_funscript_from_vorze(
+def test_funscript_to_vorze(
     commands: list[ScriptCommand[GenericLinearCommand]],
     vorze_commands: list[VorzeScriptCommand[VorzeLinearCommand]],
     inverted: bool,
 ) -> None:
     """Test converting funscript to Vorze CSV."""
-    assert FunscriptScript(commands, inverted=inverted).to_vorze() == VorzeLinearScript(
-        vorze_commands
-    )
+    expected = VorzeLinearScript(vorze_commands)
+    actual = FunscriptScript(commands, inverted=inverted).to_vorze()
+    assert expected.commands == actual.commands
+    assert expected == actual
 
 
 @pytest.mark.parametrize(
@@ -114,12 +117,12 @@ def test_funscript_from_vorze(
         (INVERTED_COMMANDS, INVERTED_VORZE, True),
     ],
 )
-def test_funscript_to_vorze(
+def test_funscript_from_vorze(
     commands: list[ScriptCommand[GenericLinearCommand]],
     vorze_commands: list[VorzeScriptCommand[VorzeLinearCommand]],
     inverted: bool,
 ) -> None:
-    """Test converting funscript to Vorze CSV."""
+    """Test converting funscript from Vorze CSV."""
     expected = FunscriptScript(commands, inverted=inverted)
     actual = FunscriptScript.from_vorze(
         VorzeLinearScript(vorze_commands), inverted=inverted
