@@ -39,7 +39,7 @@ def precommit(session: Session) -> None:
 @session(python=python_versions[0])
 def safety(session: Session) -> None:
     """Scan dependencies for insecure packages."""
-    session.run_always("pdm", "install", "-G", "safety", external=True)
+    session.run_always("pdm", "install", "-G", "ble", "-G", "safety", external=True)
     session.run("pdm", "export", "-o", "requirements.txt", "--without-hashes")
     session.run("safety", "check", "--full-report", "--file=requirements.txt")
 
@@ -47,7 +47,9 @@ def safety(session: Session) -> None:
 @session(python=python_versions[0])
 def mypy(session: Session) -> None:
     """Type-check using mypy."""
-    session.run_always("pdm", "install", "-G", "mypy", "-G", "tests", external=True)
+    session.run_always(
+        "pdm", "install", "-G", "ble", "-G", "mypy", "-G", "tests", external=True
+    )
     args = session.posargs or ["stubs", "src", "tests", "docs/conf.py"]
     session.run("mypy", *args)
     if not session.posargs:
@@ -60,6 +62,8 @@ def tests(session: Session) -> None:
     session.run_always(
         "pdm",
         "install",
+        "-G",
+        "ble",
         "-G",
         "tests",
         "-G",
@@ -91,6 +95,8 @@ def typeguard(session: Session) -> None:
     session.run_always(
         "pdm",
         "install",
+        "-G",
+        "ble",
         "-G",
         "typeguard",
         "-G",
