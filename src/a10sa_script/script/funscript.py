@@ -10,7 +10,7 @@ from loguru import logger
 
 from ..command import GenericLinearCommand, VorzeLinearCommand
 from ..exceptions import ParseError
-from .base import ScriptCommand, SerializableScript
+from .base import BaseScript, ScriptCommand, SerializableScript
 from .vorze import VorzeLinearScript, VorzeScriptCommand
 
 
@@ -157,7 +157,7 @@ class FunscriptScript(SerializableScript[GenericLinearCommand]):
 
     @classmethod
     def from_vorze(
-        cls, script: VorzeLinearScript, inverted: bool = False
+        cls, script: BaseScript[VorzeLinearCommand], inverted: bool = False
     ) -> "FunscriptScript":
         """Convert Vorze Piston script to funscript.
 
@@ -198,7 +198,7 @@ class FunscriptScript(SerializableScript[GenericLinearCommand]):
                 "Converting inverted funscript, Vorze CSV will not be inverted."
             )
         pos = self.initial_position
-        commands: list[ScriptCommand[VorzeLinearCommand]] = []
+        commands: list[VorzeScriptCommand[VorzeLinearCommand]] = []
         for i, cmd in enumerate(self.commands):
             linear_cmd = cmd.cmd
             if linear_cmd.duration:
