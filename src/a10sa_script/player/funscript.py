@@ -2,6 +2,7 @@ from buttplug import Client, WebsocketConnector, ProtocolSpec
 
 from .player import ScriptPlayer
 from ..command.base import GenericLinearCommand
+from ..script import FunscriptScript
 
 
 class FunscriptScriptPlayer(ScriptPlayer[GenericLinearCommand]):
@@ -70,4 +71,8 @@ class FunscriptScriptPlayer(ScriptPlayer[GenericLinearCommand]):
                 )
 
     async def reset(self) -> None:
-        await self.send(GenericLinearCommand(500, 0.0))
+        if self._script is not None and isinstance(self._script, FunscriptScript):
+            pos = self._script.initial_position
+        else:
+            pos = 0.0
+        await self.send(GenericLinearCommand(500, pos))
