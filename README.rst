@@ -49,7 +49,7 @@ Experimental features
 
 **Experimental features are not fully tested, use at your own risk.**
 
-* Control Vorze devices directly via BluetoothLE (tested with CycloneSA, untested for UFOSA, UFO-TW, PistonSA).
+* Control Vorze devices directly via BluetoothLE (tested with CycloneSA, untested for UFOSA, PistonSA).
 * Control linear/funscript devices via `Buttplug Protocol`_ (requires `Intiface Central`_, tested with Handy).
 
 *Bluetooth functionality requires installation with ``[ble]`` dependencies.*
