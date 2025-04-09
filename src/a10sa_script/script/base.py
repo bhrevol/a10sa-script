@@ -1,20 +1,12 @@
 """Base script module."""
 from abc import abstractmethod
+from collections.abc import Iterable, Iterator, MutableSequence
 from dataclasses import dataclass
-from typing import Any
-from typing import BinaryIO
-from typing import Generic
-from collections.abc import Iterable
-from collections.abc import Iterator
-from collections.abc import MutableSequence
-from typing import TypeVar
-from typing import overload
+from typing import Any, BinaryIO, Generic, TypeAlias, TypeVar, overload
 
 from sortedcontainers import SortedList
-from typing import TypeAlias
 
 from ..command import BaseCommand
-
 
 _T = TypeVar("_T", bound=BaseCommand)
 

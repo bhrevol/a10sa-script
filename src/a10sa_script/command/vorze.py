@@ -1,21 +1,15 @@
 """Vorze script module."""
 import math
 from abc import abstractmethod
-from dataclasses import dataclass
-from typing import Any
-from typing import ClassVar
 from collections.abc import Iterable
-from typing import TypeVar
+from dataclasses import dataclass
+from typing import Any, ClassVar, TypeVar
 
 from buttplug.messages.v1 import Rotation, Vector
 from buttplug.messages.v3 import Scalar
 from loguru import logger
 
-from .base import BaseCommand
-from .base import LinearPositionCommand
-from .base import RotateCommand
-from .base import VibrateCommand
-
+from .base import BaseCommand, LinearPositionCommand, RotateCommand, VibrateCommand
 
 _T = TypeVar("_T", bound="BaseVorzeCommand")
 

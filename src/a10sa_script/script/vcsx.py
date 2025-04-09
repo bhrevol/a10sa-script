@@ -1,20 +1,13 @@
 """LPEG/Afesta VCSX script module."""
 from abc import abstractmethod
-from typing import Any
-from typing import BinaryIO
-from typing import ClassVar
 from collections.abc import Iterable
+from typing import Any, BinaryIO, ClassVar
 
-from ..command.vorze import VorzeLinearCommand
-from ..command.vorze import VorzeRotateCommand
-from ..command.vorze import VorzeVibrateCommand
+from ..command.vorze import VorzeLinearCommand, VorzeRotateCommand, VorzeVibrateCommand
 from ..exceptions import ParseError
-from ..utils import to_u32
-from ..utils import to_uint
+from ..utils import to_u32, to_uint
 from .base import SerializableScript
-from .vorze import _SC
-from .vorze import _T
-from .vorze import VorzeScriptCommand
+from .vorze import _SC, _T, VorzeScriptCommand
 
 
 class VCSXScript(SerializableScript[_T]):

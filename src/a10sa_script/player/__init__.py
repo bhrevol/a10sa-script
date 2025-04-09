@@ -1,12 +1,11 @@
-from .player import ScriptPlayer
 from .funscript import FunscriptScriptPlayer
+from .player import ScriptPlayer
 from .vorze import (
-    VorzeScriptPlayer,
     VorzeCyclonePlayer,
-    VorzeUFOPlayer,
     VorzePistonPlayer,
+    VorzeScriptPlayer,
+    VorzeUFOPlayer,
 )
-
 
 __all__ = [
     "FunscriptScriptPlayer",

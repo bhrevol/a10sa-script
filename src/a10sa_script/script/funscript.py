@@ -1,10 +1,9 @@
 """Funjack funscript script module."""
 import io
 import json
-from dataclasses import asdict
-from dataclasses import dataclass
-from typing import Any, BinaryIO
 from collections.abc import Iterator
+from dataclasses import asdict, dataclass
+from typing import Any, BinaryIO
 
 from loguru import logger
 

@@ -6,13 +6,13 @@ from typing import TYPE_CHECKING, TypeVar
 
 from loguru import logger
 
-from .player import ScriptPlayer
 from ..command.vorze import BaseVorzeCommand, VorzeLinearCommand, VorzeRotateCommand
+from .player import ScriptPlayer
 
 if TYPE_CHECKING:
+    from bleak import BleakClient
     from bleak.backends.device import BLEDevice
     from bleak.backends.scanner import AdvertisementData
-    from bleak import BleakClient
 
 
 T = TypeVar("T", bound="BaseVorzeCommand")
@@ -33,6 +33,7 @@ NLS_COMMAND_CHARACTERISTIC_UUID = "40ee2222-63ec-4b7f-8ce7-712efd55b90e"
 class VorzeScriptPlayer(ScriptPlayer[T]):
     DEVICE_ID = DeviceID.CYCLONE_SA
     LOCAL_NAMES = {"CycSA"}
+    DEVICE_LATENCY = 50
 
     def __init__(self) -> None:
         if importlib.util.find_spec("bleak") is None:
@@ -48,6 +49,7 @@ class VorzeScriptPlayer(ScriptPlayer[T]):
         """Connect to any available Vorze Devices."""
         from bleak import BleakScanner
 
+        await super().connect()
         if self._scan_stack is not None:
             logger.debug("Already scanning for connections.")
             return
@@ -56,7 +58,7 @@ class VorzeScriptPlayer(ScriptPlayer[T]):
             detection_callback=self._detection_callback,
             service_uuids=[VORZE_SERVICE_UUID],
         )
-        await stack.enter_async_context(scanner)  # type: ignore[arg-type]
+        scanner = await stack.enter_async_context(scanner)  # type: ignore[arg-type]
         logger.debug("Started scanning for Vorze BLE devices.")
         self._scan_stack = stack
 
@@ -72,6 +74,7 @@ class VorzeScriptPlayer(ScriptPlayer[T]):
         await self._scan_stack.aclose()
         logger.debug("Stopped scanning for Vorze BLE devices.")
         self._scan_stack = None
+        await super().disconnect()
 
     async def _detection_callback(
         self, device: "BLEDevice", advertisement_data: "AdvertisementData"
@@ -85,6 +88,8 @@ class VorzeScriptPlayer(ScriptPlayer[T]):
             client = BleakClient(
                 device, disconnected_callback=self._disconnected_callback
             )
+            if self.is_playing:
+                await client.connect()
             async with self._clients_lock:
                 self._clients[client.address] = client
             logger.debug("Registered client {}", client)
@@ -114,12 +119,17 @@ class VorzeScriptPlayer(ScriptPlayer[T]):
         return await super()._run()
 
     async def _send_command(self, data: list[int]) -> None:
+        from bleak.exc import BleakError
+
         for client in self._clients.values():
-            await client.write_gatt_char(
-                NLS_COMMAND_CHARACTERISTIC_UUID,
-                bytes([self.DEVICE_ID.value] + data),
-                response=True,
-            )
+            try:
+                await client.write_gatt_char(
+                    NLS_COMMAND_CHARACTERISTIC_UUID,
+                    bytes([self.DEVICE_ID.value] + data),
+                    response=True,
+                )
+            except BleakError:
+                logger.exception("Failed to write gatt command")
 
 
 class VorzeCyclonePlayer(VorzeScriptPlayer[VorzeRotateCommand]):
@@ -137,16 +147,20 @@ class VorzeCyclonePlayer(VorzeScriptPlayer[VorzeRotateCommand]):
     def speed_multiplier(self, value: float) -> None:
         if 0.0 <= value:
             self._speed_multiplier = value
+            logger.debug("speed multiplier {}", value)
         else:
             raise ValueError("multiplier must be >= 0")
 
     async def send(self, command: VorzeRotateCommand) -> None:
-        logger.debug("Rotate {}", command)
+        logger.trace("Rotate {}", command)
         speed = max(0, min(100, round(command.speed * self.speed_multiplier)))
         await self._send_command([0x01, (not command.clockwise) << 7 | speed])
 
     async def reset(self) -> None:
         await self.send(VorzeRotateCommand(0, True))
+
+    def halt_command(self) -> VorzeRotateCommand:
+        return VorzeRotateCommand(0, True)
 
 
 class VorzeUFOPlayer(VorzeCyclonePlayer):

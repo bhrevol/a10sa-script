@@ -7,3 +7,11 @@ class A10SAError(Exception):
 
 class ParseError(A10SAError):
     """A script parsing error occured."""
+
+
+class PlayerError(A10SAError):
+    """Script player error occured."""
+
+
+class DeviceError(PlayerError):
+    """Player device error occured."""

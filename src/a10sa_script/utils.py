@@ -1,8 +1,11 @@
 """Generic utilities."""
-from typing import Literal
-from typing import Union
+import sys
+from typing import Literal, TypeAlias, Union
 
-from typing import TypeAlias
+if sys.version_info >= (3, 11):
+    from asyncio import TaskGroup as TaskGroup
+else:
+    from taskgroup import TaskGroup as TaskGroup
 
 
 _ByteOrder: TypeAlias = Union[Literal["little"], Literal["big"]]
