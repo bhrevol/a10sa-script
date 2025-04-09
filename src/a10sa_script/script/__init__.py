@@ -1,16 +1,8 @@
 """Script module."""
-from .base import BaseScript
-from .base import ScriptCommand
+from .base import BaseScript, ScriptCommand
 from .funscript import FunscriptScript
-from .vcsx import VCSXCycloneScript
-from .vcsx import VCSXOnaRhythmScript
-from .vcsx import VCSXPistonScript
-from .vcsx import VCSXScript
-from .vorze import VorzeLinearScript
-from .vorze import VorzeRotateScript
-from .vorze import VorzeScript
-from .vorze import VorzeVibrateScript
-
+from .vcsx import VCSXCycloneScript, VCSXOnaRhythmScript, VCSXPistonScript, VCSXScript
+from .vorze import VorzeLinearScript, VorzeRotateScript, VorzeScript, VorzeVibrateScript
 
 __all__ = [
     "BaseScript",

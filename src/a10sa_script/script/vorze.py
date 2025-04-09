@@ -3,19 +3,16 @@ import csv
 import io
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import BinaryIO
-from typing import TypeVar
+from typing import BinaryIO, TypeAlias, TypeVar
 
-from typing import TypeAlias
-
-from ..command.vorze import BaseVorzeCommand
-from ..command.vorze import VorzeLinearCommand
-from ..command.vorze import VorzeRotateCommand
-from ..command.vorze import VorzeVibrateCommand
+from ..command.vorze import (
+    BaseVorzeCommand,
+    VorzeLinearCommand,
+    VorzeRotateCommand,
+    VorzeVibrateCommand,
+)
 from ..exceptions import ParseError
-from .base import ScriptCommand
-from .base import SerializableScript
-
+from .base import ScriptCommand, SerializableScript
 
 _T = TypeVar("_T", bound=BaseVorzeCommand)
 
