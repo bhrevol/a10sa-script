@@ -449,6 +449,7 @@ summary = "Code coverage measurement for Python"
 groups = ["coverage"]
 dependencies = [
     "coverage==7.8.2",
+    "coverage==7.8.2",
     "tomli; python_full_version <= \"3.11.0a6\"",
 ]
 files = [
@@ -2318,6 +2319,7 @@ dependencies = [
     "Pygments>=2.0.0; python_version < \"3.5.0\" and python_version >= \"2.7.0\"",
     "Pygments>=2.4.1; python_version >= \"3.5.0\"",
     "colorama>=0.4.1; platform_system == \"Windows\"",
+    "xdoctest==1.2.0",
     "xdoctest==1.2.0",
 ]
 files = [
