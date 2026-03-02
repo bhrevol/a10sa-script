@@ -25,7 +25,6 @@ jobs:
           - { python: "3.13", os: "ubuntu-latest", session: "docs-build" }
           - { python: "3.12", os: "ubuntu-latest", session: "tests" }
           - { python: "3.11", os: "ubuntu-latest", session: "tests" }
-          - { python: "3.10", os: "ubuntu-latest", session: "tests" }
 
     env:
       NOXSESSION: ${{ matrix.session }}
