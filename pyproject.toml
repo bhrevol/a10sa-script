@@ -8,7 +8,7 @@ dependencies = [
     "click>=8.1.8",
     "sortedcontainers>=2.4.0",
     "loguru>=0.7.3",
-    "buttplug-py>=0.2.0",
+    "buttplug-py<1.0,>=0.2.0",
 ]
 requires-python = "<4.0,>=3.10"
 readme = "README.rst"
