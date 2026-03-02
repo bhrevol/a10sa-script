@@ -35,6 +35,7 @@ tests = ["tests", "*/tests"]
 
 [tool.coverage.run]
 branch = true
+relative_files = true
 source = ["a10sa_script", "tests"]
 
 [tool.coverage.report]
