@@ -7,7 +7,7 @@ from typing import Any, BinaryIO
 
 from loguru import logger
 
-from ..command import GenericLinearCommand, VorzeLinearCommand
+from ..command import PositionWithDurationCommand, VorzePositionCommand
 from ..exceptions import ParseError
 from .base import BaseScript, ScriptCommand, SerializableScript
 from .vorze import VorzeLinearScript, VorzeScriptCommand
@@ -19,7 +19,7 @@ class _Action:
     pos: int
 
 
-class FunscriptScript(SerializableScript[GenericLinearCommand]):
+class FunscriptScript(SerializableScript[PositionWithDurationCommand]):
     """Funscript linear (Piston) script.
 
     Commands are stored as native Buttplug/funscript vector actions.
@@ -55,8 +55,12 @@ class FunscriptScript(SerializableScript[GenericLinearCommand]):
         try:
             initial_cmd = self.commands[0]
             linear_cmd = initial_cmd.cmd
-            if initial_cmd.offset == 0 and linear_cmd.duration == 0:
-                return linear_cmd.position
+            if (
+                initial_cmd.offset == 0
+                and linear_cmd.duration is None
+                or linear_cmd.duration == 0
+            ):
+                return linear_cmd.value
         except IndexError:
             pass
         return 1.0 if self.inverted else 0.0
@@ -98,8 +102,8 @@ class FunscriptScript(SerializableScript[GenericLinearCommand]):
                         cmd.offset, self.vector_to_funscript(pos, self.inverted)
                     )
             linear_cmd = cmd.cmd
-            offset = cmd.offset + linear_cmd.duration
-            pos = linear_cmd.position
+            offset = cmd.offset + (linear_cmd.duration or 0)
+            pos = linear_cmd.value
             yield _Action(offset, self.vector_to_funscript(pos, self.inverted))
 
     @classmethod
@@ -120,7 +124,7 @@ class FunscriptScript(SerializableScript[GenericLinearCommand]):
         except json.JSONDecodeError as e:
             raise ParseError("Failed to parse file as funscript JSON.") from e
         inverted = data.get("inverted", False)
-        commands: list[ScriptCommand[GenericLinearCommand]] = []
+        commands: list[ScriptCommand[PositionWithDurationCommand]] = []
         offset = 0
         pos = 1.0 if inverted else 0.0
         try:
@@ -130,7 +134,7 @@ class FunscriptScript(SerializableScript[GenericLinearCommand]):
                 if pos != next_pos:
                     commands.append(
                         ScriptCommand(
-                            offset, GenericLinearCommand(at - offset, next_pos)
+                            offset, PositionWithDurationCommand(next_pos, at - offset)
                         )
                     )
                 pos = next_pos
@@ -156,7 +160,7 @@ class FunscriptScript(SerializableScript[GenericLinearCommand]):
 
     @classmethod
     def from_vorze(
-        cls, script: BaseScript[VorzeLinearCommand], inverted: bool = False
+        cls, script: BaseScript[VorzePositionCommand], inverted: bool = False
     ) -> "FunscriptScript":
         """Convert Vorze Piston script to funscript.
 
@@ -168,19 +172,17 @@ class FunscriptScript(SerializableScript[GenericLinearCommand]):
             Conversion will result in loss of resolution due to the conversion between
             Buttplug duration and Piston speed.
         """
-        commands: list[ScriptCommand[GenericLinearCommand]] = []
+        commands: list[ScriptCommand[PositionWithDurationCommand]] = []
         pos = 1.0
         if not inverted:
             # Vorze scripts always start at the top of the device. Funscript defaults to
             # bottom of the device for non-inverted scripts, so we insert an explicit
             # initial position at offset 0.
-            commands.append(ScriptCommand(0, GenericLinearCommand(0, pos)))
+            commands.append(ScriptCommand(0, PositionWithDurationCommand(pos, 0)))
         for cmd in script.commands:
             piston_cmd = cmd.cmd
-            vectors = piston_cmd.vectors(pos)
-            linear_cmd = GenericLinearCommand.from_vectors(vectors)
-            commands.append(ScriptCommand(cmd.offset, linear_cmd))
-            pos = linear_cmd.position
+            commands.append(ScriptCommand(cmd.offset, piston_cmd))
+            pos = piston_cmd.value
         return cls(commands, inverted=inverted)
 
     def to_vorze(self) -> VorzeLinearScript:
@@ -197,11 +199,15 @@ class FunscriptScript(SerializableScript[GenericLinearCommand]):
                 "Converting inverted funscript, Vorze CSV will not be inverted."
             )
         pos = self.initial_position
-        commands: list[VorzeScriptCommand[VorzeLinearCommand]] = []
+        commands: list[VorzeScriptCommand[VorzePositionCommand]] = []
         for i, cmd in enumerate(self.commands):
             linear_cmd = cmd.cmd
-            if linear_cmd.duration:
-                piston_cmd = VorzeLinearCommand.from_vectors(linear_cmd.vectors, pos)
+            if isinstance(linear_cmd, VorzePositionCommand):
+                commands.append(VorzeScriptCommand(cmd.offset, linear_cmd))
+            elif linear_cmd.duration:
+                piston_cmd = VorzePositionCommand.from_output_command(
+                    linear_cmd.output_command, start_value=pos
+                )
                 commands.append(VorzeScriptCommand(cmd.offset, piston_cmd))
-            pos = linear_cmd.position
+            pos = linear_cmd.value
         return VorzeLinearScript(commands)

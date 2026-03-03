@@ -5,7 +5,7 @@
 groups = ["default", "ble", "coverage", "docs", "lint", "mypy", "safety", "tests", "typeguard", "xdoctest"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:885b74e5e5c45b29554d622f167c0c5c60fb0d0c6413a8925d53d409d5914729"
+content_hash = "sha256:7a0fff3d40f8cb533adf1b014982f8ce8d308dfce0ef090f5da0e266b87fc98d"
 
 [[metadata.targets]]
 requires_python = "~=3.11"
@@ -51,7 +51,7 @@ name = "annotated-types"
 version = "0.7.0"
 requires_python = ">=3.8"
 summary = "Reusable constraint types to use with typing.Annotated"
-groups = ["safety"]
+groups = ["default", "safety"]
 dependencies = [
     "typing-extensions>=4.0.0; python_version < \"3.9\"",
 ]
@@ -148,17 +148,17 @@ files = [
 ]
 
 [[package]]
-name = "buttplug-py"
-version = "0.2.0"
-requires_python = ">=3.9"
-summary = "Python client implementation of the Buttplug Intimate Hardware Control Protocol."
+name = "buttplug"
+version = "1.0.0"
+requires_python = ">=3.10"
+summary = "Buttplug Intimate Hardware Control Library"
 groups = ["default"]
 dependencies = [
-    "websockets>=10.4",
+    "pydantic>=2.0",
+    "websockets>=12.0",
 ]
 files = [
-    {file = "buttplug-py-0.2.0.tar.gz", hash = "sha256:44a1eac94a3a050264d0356efc6802e13e6d782d6064164d6d24c7cebabe14a3"},
-    {file = "buttplug_py-0.2.0-py3-none-any.whl", hash = "sha256:29f14fb9f7ae13050b19f33e1b2fbda052c785607adea69cec6ffb8ae77817ff"},
+    {file = "buttplug-1.0.0-py3-none-any.whl", hash = "sha256:7ef8db48762082106f1a1044c3bb2bad050ec6516c1ed00471032756553d476e"},
 ]
 
 [[package]]
@@ -1208,7 +1208,7 @@ name = "pydantic"
 version = "2.12.5"
 requires_python = ">=3.9"
 summary = "Data validation using Python type hints"
-groups = ["safety"]
+groups = ["default", "safety"]
 dependencies = [
     "annotated-types>=0.6.0",
     "pydantic-core==2.41.5",
@@ -1225,7 +1225,7 @@ name = "pydantic-core"
 version = "2.41.5"
 requires_python = ">=3.9"
 summary = "Core functionality for Pydantic validation and serialization"
-groups = ["safety"]
+groups = ["default", "safety"]
 dependencies = [
     "typing-extensions>=4.14.1",
 ]
@@ -2004,7 +2004,7 @@ name = "typing-extensions"
 version = "4.15.0"
 requires_python = ">=3.9"
 summary = "Backported and Experimental Type Hints for Python 3.9+"
-groups = ["ble", "docs", "mypy", "safety", "typeguard"]
+groups = ["default", "ble", "docs", "mypy", "safety", "typeguard"]
 files = [
     {file = "typing_extensions-4.15.0-py3-none-any.whl", hash = "sha256:f0fa19c6845758ab08074a0cfa8b7aecb71c999ca73d62883bc25cc018c4e548"},
     {file = "typing_extensions-4.15.0.tar.gz", hash = "sha256:0cea48d173cc12fa28ecabc3b837ea3cf6f38c6d1136f85cbaaf598984861466"},
@@ -2015,7 +2015,7 @@ name = "typing-inspection"
 version = "0.4.2"
 requires_python = ">=3.9"
 summary = "Runtime typing introspection tools"
-groups = ["safety"]
+groups = ["default", "safety"]
 dependencies = [
     "typing-extensions>=4.12.0",
 ]

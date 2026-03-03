@@ -1,14 +1,14 @@
 import asyncio
-from buttplug import Client, ClientError, ProtocolSpec, WebsocketConnector
+from buttplug import ButtplugClient, ButtplugDevice, ButtplugDeviceError, ButtplugError
 from loguru import logger
 
 from ..exceptions import DeviceError
-from ..command.base import GenericLinearCommand
+from ..command.base import PositionWithDurationCommand
 from ..script import FunscriptScript
 from .player import ScriptPlayer
 
 
-class FunscriptScriptPlayer(ScriptPlayer[GenericLinearCommand]):
+class FunscriptScriptPlayer(ScriptPlayer[PositionWithDurationCommand]):
     """Script player for playing funscripts via Buttplug/Intiface.
 
     Connects to Intiface when used as an async context manager, but does not scan for
@@ -25,17 +25,29 @@ class FunscriptScriptPlayer(ScriptPlayer[GenericLinearCommand]):
         max_position: float | None = None,
     ) -> None:
         super().__init__()
-        self._client = Client(name or "a10sa-script", ProtocolSpec.v3)
-        self._connector = WebsocketConnector(
-            intiface_addr or "ws://127.0.0.1:12345",
-            logger=self._client.logger,
-        )
+        self._client = ButtplugClient(name or "a10sa-script")
+        self._client.on_device_added = self.on_device_added
+        self._client.on_device_removed = self.on_device_removed
+        self._client.on_disconnect = self.on_disconnect
+        self.intiface_addr = intiface_addr or "ws://127.0.0.1:12345"
         self._min_position = (
             self._validate_position(min_position) if min_position is not None else None
         )
         self._max_position = (
             self._validate_position(max_position) if max_position is not None else None
         )
+
+    @staticmethod
+    def on_device_added(device: ButtplugDevice) -> None:
+        logger.info("Device connected: {}", device.name)
+
+    @staticmethod
+    def on_device_removed(device: ButtplugDevice) -> None:
+        logger.info("Device removed: {}", device.name)
+
+    @staticmethod
+    def on_disconnect(device: ButtplugDevice) -> None:
+        logger.debug("Disconnected from intiface server")
 
     @property
     def min_position(self) -> float | None:
@@ -79,23 +91,26 @@ class FunscriptScriptPlayer(ScriptPlayer[GenericLinearCommand]):
     async def connect(self) -> None:
         await super().connect()
         try:
-            await self._client.connect(self._connector)
-        except ClientError as e:
+            await self._client.connect(self.intiface_addr)
+        except ButtplugError as e:
             raise DeviceError("Failed to connect to intiface") from e
         logger.debug("funscript connect")
 
     async def disconnect(self) -> None:
+        await self._client.stop_all_devices()
         await self._client.disconnect()
         await super().disconnect()
 
-    async def send(self, command: GenericLinearCommand) -> None:
+    async def send(self, command: PositionWithDurationCommand) -> None:
         try:
             for device in self._client.devices.values():
-                if device.linear_actuators:
-                    await device.linear_actuators[0].command(
-                        command.duration, self._scale_position(command.position)
+                if device.has_output(command.OUTPUT_TYPE):
+                    await device.run_output(
+                        command.OUTPUT_TYPE,
+                        self._scale_position(command.value),
+                        duration=command.duration,
                     )
-        except ClientError as e:
+        except ButtplugDeviceError as e:
             raise DeviceError("Failed to send command to intiface") from e
 
     async def reset(self) -> None:
@@ -103,5 +118,5 @@ class FunscriptScriptPlayer(ScriptPlayer[GenericLinearCommand]):
             pos = self._script.initial_position
         else:
             pos = 0.0
-        await self.send(GenericLinearCommand(500, pos))
+        await self.send(PositionWithDurationCommand(pos, 1000))
         await asyncio.sleep(0.5)

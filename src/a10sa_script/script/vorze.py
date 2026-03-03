@@ -3,11 +3,11 @@ import csv
 import io
 from abc import abstractmethod
 from dataclasses import dataclass
-from typing import BinaryIO, TypeAlias, TypeVar
+from typing import BinaryIO, Self, TypeAlias, TypeVar
 
 from ..command.vorze import (
     BaseVorzeCommand,
-    VorzeLinearCommand,
+    VorzePositionCommand,
     VorzeRotateCommand,
     VorzeVibrateCommand,
 )
@@ -58,7 +58,7 @@ class VorzeScript(SerializableScript[_T]):
             text_fp.detach()
 
     @classmethod
-    def load(cls, fp: BinaryIO) -> "VorzeScript[_T]":
+    def load(cls, fp: BinaryIO) -> Self:
         """Deserialize script from file.
 
         Arguments:
@@ -106,7 +106,7 @@ class VorzeVibrateScript(VorzeScript[VorzeVibrateCommand]):
         return VorzeVibrateCommand
 
 
-class VorzeLinearScript(VorzeScript[VorzeLinearCommand]):
+class VorzeLinearScript(VorzeScript[VorzePositionCommand]):
     """Vorze linear commands script.
 
     Note:
@@ -114,9 +114,37 @@ class VorzeLinearScript(VorzeScript[VorzeLinearCommand]):
     """
 
     @classmethod
-    def _command_cls(cls) -> type[VorzeLinearCommand]:
+    def _command_cls(cls) -> type[VorzePositionCommand]:
         """Return command class for this script."""
-        return VorzeLinearCommand
+        return VorzePositionCommand
+
+    @classmethod
+    def load(cls, fp: BinaryIO) -> Self:
+        """Deserialize script from file.
+
+        Arguments:
+            fp: A file-like object opened for reading.
+
+        Returns:
+            Loaded command script.
+
+        Raises:
+            ParseError: A CSV parsing error occured.
+        """
+        try:
+            reader = csv.reader(io.TextIOWrapper(fp, newline="", encoding="utf-8-sig"))
+            pos: int | None = None
+            commands: list[VorzeScriptCommand[VorzePositionCommand]] = []
+            for row in reader:
+                cmd = VorzeScriptCommand(
+                    cls.offset_to_ms(int(row[0])),
+                    VorzePositionCommand.from_csv(row[1:], start_position=pos or 0),
+                )
+                commands.append(cmd)
+                pos = cmd.cmd.position
+            return cls(commands)
+        except (csv.Error, ValueError) as e:
+            raise ParseError("Failed to parse file as Vorze CSV.") from e
 
 
 class VorzeRotateScript(VorzeScript[VorzeRotateCommand]):

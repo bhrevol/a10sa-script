@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, TypeVar
 
 from loguru import logger
 
-from ..command.vorze import BaseVorzeCommand, VorzeLinearCommand, VorzeRotateCommand
+from ..command.vorze import BaseVorzeCommand, VorzePositionCommand, VorzeRotateCommand
 from .player import ScriptPlayer
 
 if TYPE_CHECKING:
@@ -168,7 +168,7 @@ class VorzeUFOPlayer(VorzeCyclonePlayer):
     LOCAL_NAMES = {"UFOSA"}
 
 
-class VorzePistonPlayer(VorzeScriptPlayer[VorzeLinearCommand]):
+class VorzePistonPlayer(VorzeScriptPlayer[VorzePositionCommand]):
     DEVICE_ID = DeviceID.PISTON_SA
     LOCAL_NAMES = {"VorzePiston"}
 
@@ -189,10 +189,12 @@ class VorzePistonPlayer(VorzeScriptPlayer[VorzeLinearCommand]):
         else:
             raise ValueError("multiplier must be >= 0")
 
-    async def send(self, command: VorzeLinearCommand) -> None:
+    async def send(self, command: VorzePositionCommand) -> None:
+        assert command.position
+        assert command.speed
         logger.debug("Move {}", command)
         speed = max(0, min(100, round(command.speed * self.speed_multiplier)))
         await self._send_command([command.position, speed])
 
     async def reset(self) -> None:
-        await self.send(VorzeLinearCommand(0, 10))
+        await self.send(VorzePositionCommand(0, 10))

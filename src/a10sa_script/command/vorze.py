@@ -3,22 +3,23 @@ import math
 from abc import abstractmethod
 from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Any, ClassVar, TypeVar
+from typing import Any, ClassVar, Self
 
-from buttplug.messages.v1 import Rotation, Vector
-from buttplug.messages.v3 import Scalar
+from buttplug import DeviceOutputCommand
 from loguru import logger
 
-from .base import BaseCommand, LinearPositionCommand, RotateCommand, VibrateCommand
+from .base import (
+    BaseCommand,
+    PositionWithDurationCommand,
+    RotateCommand,
+    VibrateCommand,
+)
+from ..exceptions import A10SAError
 
-_T = TypeVar("_T", bound="BaseVorzeCommand")
 
-
+@dataclass(frozen=True)
 class BaseVorzeCommand(BaseCommand):
-    """Base Vorze script command.
-
-    Supports native serialization to Vorze CSV and LPEG VCSX.
-    """
+    """Commands which can be serialized to Vorze CSV and LPEG VCSX."""
 
     @abstractmethod
     def to_csv(self) -> Iterable[Any]:
@@ -26,7 +27,7 @@ class BaseVorzeCommand(BaseCommand):
 
     @classmethod
     @abstractmethod
-    def from_csv(cls: type[_T], row: Iterable[Any]) -> _T:
+    def from_csv(cls, row: Iterable[Any]) -> Self:
         """Construct command from a Vorze CSV row.
 
         Arguments:
@@ -39,7 +40,7 @@ class BaseVorzeCommand(BaseCommand):
 
     @classmethod
     @abstractmethod
-    def from_vcsx(cls: type[_T], data: bytes) -> _T:
+    def from_vcsx(cls, data: bytes) -> Self:
         """Construct command from LPEG VCSX data.
 
         Arguments:
@@ -52,56 +53,26 @@ class BaseVorzeCommand(BaseCommand):
         """Return size of VCSX command data in bytes."""
 
 
-@dataclass
-class VorzeVibrateCommand(BaseVorzeCommand, VibrateCommand):
-    """Vorze vibration command.
-
-    Attributes:
-        speed: Vibration speed with a range of [0-100].
-    """
+@dataclass(frozen=True)
+class VorzeVibrateCommand(VibrateCommand, BaseVorzeCommand):
+    """Vorze vibration command."""
 
     SPEED_DIVISOR: ClassVar[int] = 100
 
-    speed: int
-
     @property
-    def speeds(self) -> list[float]:
-        """Return Buttplug VibrateCmd speeds for this command.
-
-        Returns:
-            List of speeds suitable for use with buttplug-py
-            ``device.send_vibrate_cmd()``.
-        """
-        return [self.speed / self.SPEED_DIVISOR]
+    def speed(self) -> int:
+        """Vorze vibrate speed in range [0, 100]."""
+        return round(self.value * self.SPEED_DIVISOR)
 
     @classmethod
-    def from_speeds(cls, speeds: list[Scalar] | list[float]) -> "VorzeVibrateCommand":
-        """Return a command instance from Buttplug VibrateCmd speeds.
-
-        Arguments:
-            speeds: Buttplug VibrateCmd speeds list.
-
-        Returns:
-            New command instance.
-
-        Raises:
-            ValueError: Invalid speeds.
-        """
-        if not speeds:
-            raise ValueError("Vibrate speeds cannot be empty.")
-        speed = speeds[0]
-        if isinstance(speed, Scalar):
-            speed = speed.scalar
-        return cls(round(speed * cls.SPEED_DIVISOR))
-
-    def to_csv(self) -> tuple[int]:
-        """Return Vorze CSV row data for this command."""
-        return (self.speed,)
+    def from_speed(cls, speed: int) -> Self:
+        """Construct command from a Vorze speed value."""
+        if speed < 0 or speed > 100:
+            raise ValueError("Speed must be in range [0, 100]")
+        return cls(speed / cls.SPEED_DIVISOR)
 
     @classmethod
-    def from_csv(
-        cls: type["VorzeVibrateCommand"], row: Iterable[Any]
-    ) -> "VorzeVibrateCommand":
+    def from_csv(cls, row: Iterable[Any]) -> Self:
         """Construct command from a Vorze CSV row.
 
         Arguments:
@@ -111,7 +82,7 @@ class VorzeVibrateCommand(BaseVorzeCommand, VibrateCommand):
             Vibration command.
         """
         (speed,) = row
-        return cls(int(speed))
+        return cls.from_speed(speed)
 
     @classmethod
     def vcsx_size(cls) -> int:
@@ -124,9 +95,7 @@ class VorzeVibrateCommand(BaseVorzeCommand, VibrateCommand):
         return bytes([cmd])
 
     @classmethod
-    def from_vcsx(
-        cls: type["VorzeVibrateCommand"], data: bytes
-    ) -> "VorzeVibrateCommand":
+    def from_vcsx(cls, data: bytes) -> Self:
         """Construct command from LPEG VCSX data.
 
         Arguments:
@@ -142,17 +111,12 @@ class VorzeVibrateCommand(BaseVorzeCommand, VibrateCommand):
             raise ValueError("Invalid VCSX data")
         cmd = data[0]
         speed = cmd & 0x7F
-        return cls(speed)
+        return cls.from_speed(speed)
 
 
-@dataclass
-class VorzeLinearCommand(BaseVorzeCommand, LinearPositionCommand):
-    """Vorze linear movement (piston) command.
-
-    Attributes:
-        speed: Movement speed with a range of [0-100].
-        position: Device position with a range of [0-200], where zero
-            corresponds to the entrance end of the device.
+@dataclass(frozen=True)
+class VorzePositionCommand(PositionWithDurationCommand, BaseVorzeCommand):
+    """Vorze position (Piston) command.
 
     Note:
         Vorze linear movement commands direct the device to move to a
@@ -165,81 +129,86 @@ class VorzeLinearCommand(BaseVorzeCommand, LinearPositionCommand):
 
     POSITION_DIVISOR: ClassVar[int] = 200
 
-    position: int
-    speed: int
+    position: int | None = None
+    """Device position in range [0, 200], where zero corresponds to the entrance end of
+    the device.
+    """
+    speed: int | None = None
+    """Device speed in range [0, 100]."""
 
-    def vectors(self, position: float) -> list[tuple[int, float]]:
-        """Return Buttplug LinearCmd vectors for this command.
-
-        Arguments:
-            position: Current device position in the range [0.0-1.0].
-
-        Returns:
-            List of vectors suitable for use with buttplug-py
-            ``device.send_linear_cmd()``.
-        """
-        distance = abs(self.position - round(position * self.POSITION_DIVISOR))
-        if distance == 0 or self.speed == 0.0:
-            duration = 0.0
-        else:
-            duration = (
-                math.pow(1 / self.speed, 1 / 1.21)
-                * 6658
-                * distance
-                / self.POSITION_DIVISOR
-            )
-        return [(round(duration), self.position / self.POSITION_DIVISOR)]
+    def __post_init__(self) -> None:
+        if self.position is None or self.position < 0 or self.position > 200:
+            raise ValueError("Position is required and must be in range [0, 200]")
+        if self.speed is None or self.speed < 0 or self.speed > 100:
+            raise ValueError("Speed is required and must be in range [0, 100]")
 
     @classmethod
-    def from_vectors(
-        cls,
-        vectors: list[Vector] | list[tuple[int, float]],
-        position: float,
-    ) -> "VorzeLinearCommand":
-        """Return a command instance from Buttplug LinearCmd speeds.
+    def from_position_and_speed(
+        cls, stop_position: int, speed: int, *, start_position: int = 0
+    ) -> Self:
+        """Construct command from Vorze position and speed values."""
+        if (
+            start_position < 0
+            or start_position > 200
+            or stop_position < 0
+            or stop_position > 200
+        ):
+            raise ValueError("Position must be in range [0, 200]")
+        if speed < 0 or speed > 100:
+            raise ValueError("Speed must be in range [0, 100]")
+        distance = abs(stop_position - start_position)
+        duration = round(
+            math.pow(1 / speed, 1 / 1.21) * 6658 * distance / cls.POSITION_DIVISOR
+        )
+        return cls(
+            value=stop_position / cls.POSITION_DIVISOR,
+            duration=duration,
+            position=stop_position,
+            speed=speed,
+        )
+
+    @classmethod
+    def from_output_command(
+        cls, output_command: DeviceOutputCommand, *, start_value: float = 0.0
+    ) -> Self:
+        """Return a command instance from a Buttplug v4 output command.
 
         Arguments:
-            vectors: Buttplug LinearCmd vectors list.
-            position: Current device position in the range [0.0-1.0].
-
-        Returns:
-            New command instance.
-
-        Raises:
-            ValueError: Invalid vectors or position.
+            start_value: Starting device position in Buttplug percentage range [0.0, 1.0].
         """
-        if not vectors:
-            raise ValueError("Linear vectors cannot be empty.")
-        if isinstance(vectors[0], Vector):
-            duration = vectors[0].duration
-            new_position = vectors[0].position
-        else:
-            duration, new_position = vectors[0]
-        curpos = round(position * cls.POSITION_DIVISOR)
-        newpos = round(new_position * cls.POSITION_DIVISOR)
-        distance = abs(newpos - curpos)
+        if output_command.output_type != cls.OUTPUT_TYPE:
+            raise A10SAError(
+                f"Cannot deserialize v4 {output_command.output_type} to {cls.__class__}"
+            )
+        start_position = start_value * cls.POSITION_DIVISOR
+        stop_position = round(output_command.value * cls.POSITION_DIVISOR)
+        distance = abs(stop_position - start_position)
         if distance == 0:
             speed = 0
         else:
-            # speed conversion from Buttplug device/protocol/vorze_sa.rs
-            dur = duration * cls.POSITION_DIVISOR / distance
-            speed = round(math.pow(dur / 6658, -1.21))
+            duration = (output_command.duration or 0) * cls.POSITION_DIVISOR / distance
+            speed = round(math.pow(duration / 6658, -1.21))
             if speed > 100:
                 speed = 100
                 logger.warning("Required movement exceeds max speed (using 100).")
             elif speed == 0:
                 speed = 1
                 logger.warning("Required movement below min speed (using 1).")
-        return cls(newpos, speed)
+        return cls(
+            value=output_command.value,
+            duration=output_command.duration,
+            position=stop_position,
+            speed=speed,
+        )
 
     def to_csv(self) -> tuple[int, int]:
         """Return Vorze CSV row data for this command."""
+        assert self.position is not None
+        assert self.speed is not None
         return self.position, self.speed
 
     @classmethod
-    def from_csv(
-        cls: type["VorzeLinearCommand"], row: Iterable[Any]
-    ) -> "VorzeLinearCommand":
+    def from_csv(cls, row: Iterable[Any], *, start_position: int = 0) -> Self:
         """Construct command from a Vorze CSV row.
 
         Arguments:
@@ -249,7 +218,9 @@ class VorzeLinearCommand(BaseVorzeCommand, LinearPositionCommand):
             Vibration command.
         """
         (position, speed) = row
-        return cls(int(position), int(speed))
+        return cls.from_position_and_speed(
+            int(position), int(speed), start_position=start_position
+        )
 
     @classmethod
     def vcsx_size(cls) -> int:
@@ -258,11 +229,13 @@ class VorzeLinearCommand(BaseVorzeCommand, LinearPositionCommand):
 
     def to_vcsx(self) -> bytes:
         """Return LPEG VCSX data for this command."""
+        assert self.position is not None
+        assert self.speed is not None
         cmd = [0, self.position & 0xFF, self.speed & 0xFF]
         return bytes(cmd)
 
     @classmethod
-    def from_vcsx(cls: type["VorzeLinearCommand"], data: bytes) -> "VorzeLinearCommand":
+    def from_vcsx(cls, data: bytes, *, start_position: int = 0) -> Self:
         """Construct command from LPEG VCSX data.
 
         Arguments:
@@ -279,66 +252,43 @@ class VorzeLinearCommand(BaseVorzeCommand, LinearPositionCommand):
         cmd = data[:3]
         position = cmd[1] & 0xFF
         speed = cmd[2] & 0xFF
-        return cls(position, speed)
+        return cls.from_position_and_speed(
+            position, speed, start_position=start_position
+        )
 
 
-@dataclass
-class VorzeRotateCommand(BaseVorzeCommand, RotateCommand):
-    """Vorze rotation command.
-
-    Attributes:
-        speed: Rotation speed with a range of [0-100].
-        clockwise: Rotation direction.
-    """
+@dataclass(frozen=True)
+class VorzeRotateCommand(RotateCommand, BaseVorzeCommand):
+    """Vorze rotation (Cyclone, UFO) command."""
 
     SPEED_DIVISOR: ClassVar[int] = 100
 
-    speed: int
-    clockwise: bool
+    @property
+    def speed(self) -> int:
+        """Vorze rotation speed in range [0, 100]."""
+        return abs(round(self.value * self.SPEED_DIVISOR))
 
     @property
-    def rotations(self) -> list[tuple[float, bool]]:
-        """Return Buttplug RotateCmd rotations for this command.
-
-        Returns:
-            List of vectors suitable for use with buttplug-py
-            ``device.send_rotate_cmd()``.
-        """
-        return [(self.speed / self.SPEED_DIVISOR, self.clockwise)]
+    def clockwise(self) -> bool:
+        """True if rotation direction is clockwise."""
+        return self.value >= 0.0
 
     @classmethod
-    def from_rotations(
-        cls, rotations: list[Rotation] | list[tuple[float, bool]]
-    ) -> "VorzeRotateCommand":
-        """Return a command instance from Buttplug RotateCmd rotations.
-
-        Arguments:
-            rotations: Buttplug RotateCmd rotations list.
-
-        Returns:
-            New command instance.
-
-        Raises:
-            ValueError: Invalid rotations.
-        """
-        if not rotations:
-            raise ValueError("Rotations cannot be empty.")
-        rotation = rotations[0]
-        if isinstance(rotation, Rotation):
-            speed = rotation.speed
-            clockwise = rotation.clockwise
-        else:
-            speed, clockwise = rotation
-        return cls(round(speed * cls.SPEED_DIVISOR), clockwise)
+    def from_speed(cls, speed: int, clockwise: bool = True) -> Self:
+        """Construct command from Vorze speed and direction values."""
+        if speed < 0 or speed > 100:
+            raise ValueError("Speed must be in range [0, 100]")
+        value = speed / cls.SPEED_DIVISOR
+        if not clockwise:
+            value *= -1
+        return cls(value)
 
     def to_csv(self) -> tuple[int, int]:
         """Return Vorze CSV row data for this command."""
         return 0 if self.clockwise else 1, self.speed
 
     @classmethod
-    def from_csv(
-        cls: type["VorzeRotateCommand"], row: Iterable[Any]
-    ) -> "VorzeRotateCommand":
+    def from_csv(cls, row: Iterable[Any]) -> Self:
         """Construct command from a Vorze CSV row.
 
         Arguments:
@@ -348,7 +298,7 @@ class VorzeRotateCommand(BaseVorzeCommand, RotateCommand):
             Rotation command.
         """
         direction, speed = row
-        return cls(int(speed), int(direction) == 0)
+        return cls.from_speed(int(speed), int(direction) == 0)
 
     @classmethod
     def vcsx_size(cls) -> int:
@@ -361,7 +311,7 @@ class VorzeRotateCommand(BaseVorzeCommand, RotateCommand):
         return bytes([cmd])
 
     @classmethod
-    def from_vcsx(cls: type["VorzeRotateCommand"], data: bytes) -> "VorzeRotateCommand":
+    def from_vcsx(cls, data: bytes) -> Self:
         """Construct command from LPEG VCSX data.
 
         Arguments:

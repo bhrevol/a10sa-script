@@ -3,7 +3,11 @@ from abc import abstractmethod
 from collections.abc import Iterable
 from typing import Any, BinaryIO, ClassVar
 
-from ..command.vorze import VorzeLinearCommand, VorzeRotateCommand, VorzeVibrateCommand
+from ..command.vorze import (
+    VorzePositionCommand,
+    VorzeRotateCommand,
+    VorzeVibrateCommand,
+)
 from ..exceptions import ParseError
 from ..utils import to_u32, to_uint
 from .base import SerializableScript
@@ -97,16 +101,16 @@ class VCSXOnaRhythmScript(VCSXScript[VorzeVibrateCommand]):
         return VorzeVibrateCommand
 
 
-class VCSXPistonScript(VCSXScript[VorzeLinearCommand]):
+class VCSXPistonScript(VCSXScript[VorzePositionCommand]):
     """VCSX Piston script."""
 
     VCSX_MAGIC = b"VCSX\x01Vorze_Piston\x00"
     VCSX_DEFAULT_VERSION = b"\x02\x57\x42"
 
     @classmethod
-    def _command_cls(cls) -> type[VorzeLinearCommand]:
+    def _command_cls(cls) -> type[VorzePositionCommand]:
         """Return command class for this script."""
-        return VorzeLinearCommand
+        return VorzePositionCommand
 
 
 class VCSXCycloneScript(VCSXScript[VorzeRotateCommand]):

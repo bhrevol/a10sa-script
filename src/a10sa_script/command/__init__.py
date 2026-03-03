@@ -1,26 +1,20 @@
 """Device command module."""
 from .base import (
     BaseCommand,
-    GenericLinearCommand,
-    GenericRotateCommand,
-    GenericVibrateCommand,
-    LinearCommand,
-    LinearPositionCommand,
+    PositionCommand,
+    PositionWithDurationCommand,
     RotateCommand,
     VibrateCommand,
 )
-from .vorze import VorzeLinearCommand, VorzeRotateCommand, VorzeVibrateCommand
+from .vorze import VorzePositionCommand, VorzeRotateCommand, VorzeVibrateCommand
 
 __all__ = [
     "BaseCommand",
-    "GenericLinearCommand",
-    "GenericRotateCommand",
-    "GenericVibrateCommand",
-    "LinearCommand",
-    "LinearPositionCommand",
+    "PositionCommand",
+    "PositionWithDurationCommand",
     "RotateCommand",
     "VibrateCommand",
-    "VorzeLinearCommand",
+    "VorzePositionCommand",
     "VorzeRotateCommand",
     "VorzeVibrateCommand",
 ]
