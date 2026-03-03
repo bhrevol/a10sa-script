@@ -13,7 +13,16 @@ dependencies = [
 requires-python = "<4.0,>=3.11"
 readme = "README.rst"
 license = {text = "MIT"}
-classifiers = ["Development Status :: 3 - Alpha"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
 dynamic = ["version"]
 
 [project.urls]
