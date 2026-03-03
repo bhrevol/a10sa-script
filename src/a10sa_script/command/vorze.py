@@ -27,7 +27,7 @@ class BaseVorzeCommand(BaseCommand):
 
     @classmethod
     @abstractmethod
-    def from_csv(cls, row: Iterable[Any]) -> Self:
+    def from_csv(cls, row: list[str]) -> Self:
         """Construct command from a Vorze CSV row.
 
         Arguments:
@@ -72,7 +72,7 @@ class VorzeVibrateCommand(VibrateCommand, BaseVorzeCommand):
         return cls(speed / cls.SPEED_DIVISOR)
 
     @classmethod
-    def from_csv(cls, row: Iterable[Any]) -> Self:
+    def from_csv(cls, row: list[str]) -> Self:
         """Construct command from a Vorze CSV row.
 
         Arguments:
@@ -81,8 +81,8 @@ class VorzeVibrateCommand(VibrateCommand, BaseVorzeCommand):
         Returns:
             Vibration command.
         """
-        (speed,) = row
-        return cls.from_speed(speed)
+        speed = row[0]
+        return cls.from_speed(int(speed))
 
     @classmethod
     def vcsx_size(cls) -> int:
@@ -208,7 +208,7 @@ class VorzePositionCommand(PositionWithDurationCommand, BaseVorzeCommand):
         return self.position, self.speed
 
     @classmethod
-    def from_csv(cls, row: Iterable[Any], *, start_position: int = 0) -> Self:
+    def from_csv(cls, row: list[str], *, start_position: int = 0) -> Self:
         """Construct command from a Vorze CSV row.
 
         Arguments:
@@ -217,7 +217,7 @@ class VorzePositionCommand(PositionWithDurationCommand, BaseVorzeCommand):
         Returns:
             Vibration command.
         """
-        (position, speed) = row
+        position, speed = row[:2]
         return cls.from_position_and_speed(
             int(position), int(speed), start_position=start_position
         )
@@ -288,7 +288,7 @@ class VorzeRotateCommand(RotateCommand, BaseVorzeCommand):
         return 0 if self.clockwise else 1, self.speed
 
     @classmethod
-    def from_csv(cls, row: Iterable[Any]) -> Self:
+    def from_csv(cls, row: list[str]) -> Self:
         """Construct command from a Vorze CSV row.
 
         Arguments:
@@ -297,7 +297,7 @@ class VorzeRotateCommand(RotateCommand, BaseVorzeCommand):
         Returns:
             Rotation command.
         """
-        direction, speed = row
+        direction, speed = row[:2]
         return cls.from_speed(int(speed), int(direction) == 0)
 
     @classmethod
