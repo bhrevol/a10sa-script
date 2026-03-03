@@ -42,7 +42,7 @@ Features
 --------
 
 * Read/Write/Convert supported script formats.
-* Export scripts as `Buttplug Protocol`_ command sequences.
+* Export scripts as `Buttplug Protocol v4`_ command sequences.
 
 Experimental features
 ---------------------
@@ -50,7 +50,7 @@ Experimental features
 **Experimental features are not fully tested, use at your own risk.**
 
 * Control Vorze devices directly via BluetoothLE (tested with CycloneSA, untested for UFOSA, PistonSA).
-* Control linear/funscript devices via `Buttplug Protocol`_ (requires `Intiface Central`_, tested with Handy).
+* Control linear/funscript devices via `Buttplug Protocol`_ (requires `Intiface Central 3.0 or later`_, tested with Handy).
 
 *Bluetooth functionality requires installation with ``[ble]`` dependencies.*
 

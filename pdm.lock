@@ -5,7 +5,7 @@
 groups = ["default", "ble", "coverage", "docs", "lint", "mypy", "safety", "tests", "typeguard", "xdoctest"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:7a0fff3d40f8cb533adf1b014982f8ce8d308dfce0ef090f5da0e266b87fc98d"
+content_hash = "sha256:28147ea36770e008f861541ee8526b1c8abaca2ffdea2a54b56920fb14ee5109"
 
 [[metadata.targets]]
 requires_python = "~=3.11"

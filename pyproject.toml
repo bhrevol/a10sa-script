@@ -9,7 +9,6 @@ dependencies = [
     "sortedcontainers>=2.4.0",
     "loguru>=0.7.3",
     "buttplug>=1.0",
-    "taskgroup>=0.2.2; python_version < \"3.11\"",
 ]
 requires-python = "<4.0,>=3.11"
 readme = "README.rst"
