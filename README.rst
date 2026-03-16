@@ -42,7 +42,9 @@ Features
 --------
 
 * Read/Write/Convert supported script formats.
-* Export scripts as `Buttplug Protocol v4`_ command sequences.
+* Export scripts as `Buttplug Protocol`_ v4 command sequences.
+
+  * Buttplug Protocol v3 and earlier are no longer supported. For v3 and earlier support, use ``a10sa-script>=1.0,<2.0``
 
 Experimental features
 ---------------------
@@ -50,7 +52,7 @@ Experimental features
 **Experimental features are not fully tested, use at your own risk.**
 
 * Control Vorze devices directly via BluetoothLE (tested with CycloneSA, untested for UFOSA, PistonSA).
-* Control linear/funscript devices via `Buttplug Protocol`_ (requires `Intiface Central 3.0 or later`_, tested with Handy).
+* Control linear/funscript devices via `Buttplug Protocol`_ (requires `Intiface Central`_ 3.0 or later, tested with Handy).
 
 *Bluetooth functionality requires installation with ``[ble]`` dependencies.*
 
@@ -120,7 +122,7 @@ Convert funscript ``script.funscript`` to ``script_piston.csv``:
     >>> with open("script_piston.csv", "wb") as f:
     ...     funscript.to_vorze().dump(f)
 
-Please see the `Command-line Reference <Usage_>`_ for details.
+Please see the `Command-line Reference Usage`_ for details.
 
 
 Contributing
@@ -150,7 +152,6 @@ Credits
 This project was generated from `@cjolowicz`_'s `Hypermodern Python Cookiecutter`_ template.
 
 .. _@cjolowicz: https://github.com/cjolowicz
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _MIT license: https://opensource.org/licenses/MIT
 .. _PyPI: https://pypi.org/
 .. _Hypermodern Python Cookiecutter: https://github.com/cjolowicz/cookiecutter-hypermodern-python
@@ -158,4 +159,4 @@ This project was generated from `@cjolowicz`_'s `Hypermodern Python Cookiecutter
 .. _pip: https://pip.pypa.io/
 .. github-only
 .. _Contributor Guide: https://a10sa-script.readthedocs.io/en/latest/contributing.html
-.. _Usage: https://a10sa-script.readthedocs.io/en/latest/usage.html
+.. _Command-line Reference Usage: https://a10sa-script.readthedocs.io/en/latest/usage.html
