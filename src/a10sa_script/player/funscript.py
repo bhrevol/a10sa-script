@@ -28,7 +28,7 @@ class FunscriptScriptPlayer(ScriptPlayer[PositionWithDurationCommand]):
         self._client = ButtplugClient(name or "a10sa-script")
         self._client.on_device_added = self.on_device_added
         self._client.on_device_removed = self.on_device_removed
-        self._client.on_disconnect = self.on_disconnect
+        self._client.on_server_disconnect = self.on_server_disconnect
         self.intiface_addr = intiface_addr or "ws://127.0.0.1:12345"
         self._min_position = (
             self._validate_position(min_position) if min_position is not None else None
@@ -46,7 +46,7 @@ class FunscriptScriptPlayer(ScriptPlayer[PositionWithDurationCommand]):
         logger.info("Device removed: {}", device.name)
 
     @staticmethod
-    def on_disconnect(device: ButtplugDevice) -> None:
+    def on_server_disconnect() -> None:
         logger.debug("Disconnected from intiface server")
 
     @property

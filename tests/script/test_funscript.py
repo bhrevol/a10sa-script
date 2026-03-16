@@ -142,4 +142,8 @@ def test_funscript_from_vorze(
         assert expected_cmd.offset == actual_cmd.offset
         assert expected_cmd.cmd.value == actual_cmd.cmd.value
         # allow 50ms range to account for loss of resolution
+        assert (
+            expected_cmd.cmd.duration is not None
+            and actual_cmd.cmd.duration is not None
+        )
         assert abs(expected_cmd.cmd.duration - actual_cmd.cmd.duration) <= 50

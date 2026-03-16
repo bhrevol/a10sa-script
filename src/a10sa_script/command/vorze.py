@@ -2,7 +2,7 @@
 
 import math
 from abc import abstractmethod
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from typing import Any, ClassVar, Self
 
@@ -32,7 +32,7 @@ class BaseVorzeCommand(BaseCommand):
 
     @classmethod
     @abstractmethod
-    def from_csv(cls, row: list[str]) -> Self:
+    def from_csv(cls, row: Sequence[str | int]) -> Self:
         """Construct command from a Vorze CSV row.
 
         Arguments:
@@ -85,7 +85,7 @@ class VorzeVibrateCommand(VibrateCommand, BaseVorzeCommand):
         return (self.speed,)
 
     @classmethod
-    def from_csv(cls, row: list[str]) -> Self:
+    def from_csv(cls, row: Sequence[str | int]) -> Self:
         """Construct command from a Vorze CSV row.
 
         Arguments:
@@ -235,7 +235,7 @@ class VorzePositionCommand(PositionWithDurationCommand, BaseVorzeCommand):
         return self.position, self.speed
 
     @classmethod
-    def from_csv(cls, row: list[str], *, start_position: int = 0) -> Self:
+    def from_csv(cls, row: Sequence[str | int], *, start_position: int = 0) -> Self:
         """Construct command from a Vorze CSV row.
 
         Arguments:
@@ -323,7 +323,7 @@ class VorzeRotateCommand(RotateCommand, BaseVorzeCommand):
         return 0 if self.clockwise else 1, self.speed
 
     @classmethod
-    def from_csv(cls, row: list[str]) -> Self:
+    def from_csv(cls, row: Sequence[str | int]) -> Self:
         """Construct command from a Vorze CSV row.
 
         Arguments:
