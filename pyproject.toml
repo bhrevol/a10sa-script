@@ -14,7 +14,7 @@ requires-python = "<4.0,>=3.11"
 readme = "README.rst"
 license = {text = "MIT"}
 classifiers = [
-  "Development Status :: 3 - Alpha",
+    "Development Status :: 3 - Alpha",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
