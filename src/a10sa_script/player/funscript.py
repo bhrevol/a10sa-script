@@ -94,22 +94,24 @@ class FunscriptScriptPlayer(ScriptPlayer[PositionWithDurationCommand]):
             await self._client.connect(self.intiface_addr)
         except ButtplugError as e:
             raise DeviceError("Failed to connect to intiface") from e
-        logger.debug("funscript connect")
 
     async def disconnect(self) -> None:
-        await self._client.stop_all_devices()
-        await self._client.disconnect()
+        if self._client.connected:
+            await self._client.stop_all_devices()
+            await self._client.disconnect()
         await super().disconnect()
 
     async def send(self, command: PositionWithDurationCommand) -> None:
+        if not self._client.connected:
+            return
         try:
+            scaled_command = PositionWithDurationCommand(
+                self._scale_position(command.value),
+                duration=command.duration,
+            )
             for device in self._client.devices.values():
                 if device.has_output(command.OUTPUT_TYPE):
-                    await device.run_output(
-                        command.OUTPUT_TYPE,
-                        self._scale_position(command.value),
-                        duration=command.duration,
-                    )
+                    await device.run_output(scaled_command.output_command)
         except ButtplugDeviceError as e:
             raise DeviceError("Failed to send command to intiface") from e
 

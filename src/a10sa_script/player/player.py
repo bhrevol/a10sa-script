@@ -74,7 +74,10 @@ class ScriptPlayer(AbstractAsyncContextManager["ScriptPlayer[T]"]):
             return
         if self._send_task is not None:
             self._send_task.cancel()
-            await self._send_task
+            try:
+                await self._send_task
+            except asyncio.CancelledError:
+                pass
             self._send_task = None
         await self._exit_stack.aclose()
         if self._command_queue is not None:
