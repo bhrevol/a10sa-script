@@ -1,4 +1,5 @@
 """Script module."""
+
 from .base import BaseScript, ScriptCommand
 from .funscript import FunscriptScript
 from .vcsx import VCSXCycloneScript, VCSXOnaRhythmScript, VCSXPistonScript, VCSXScript

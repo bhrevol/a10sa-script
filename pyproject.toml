@@ -8,13 +8,21 @@ dependencies = [
     "click>=8.1.8",
     "sortedcontainers>=2.4.0",
     "loguru>=0.7.3",
-    "buttplug-py<1.0,>=0.2.0",
-    "taskgroup>=0.2.2; python_version < \"3.11\"",
+    "buttplug>=1.0",
 ]
 requires-python = "<4.0,>=3.11"
 readme = "README.rst"
 license = {text = "MIT"}
-classifiers = ["Development Status :: 3 - Alpha"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
 dynamic = ["version"]
 
 [project.urls]
@@ -54,10 +62,6 @@ pretty = true
 show_column_numbers = true
 show_error_codes = true
 show_error_context = true
-
-[[tool.mypy.overrides]]
-module = "buttplug.*"
-ignore_errors = true
 
 [tool.pdm]
 distribution = true

@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from a10sa_script.command.base import GenericLinearCommand
-from a10sa_script.command.vorze import VorzeLinearCommand
+from a10sa_script.command.base import PositionWithDurationCommand
+from a10sa_script.command.vorze import VorzePositionCommand
 from a10sa_script.script.base import ScriptCommand
 from a10sa_script.script.funscript import FunscriptScript
 from a10sa_script.script.vorze import VorzeLinearScript, VorzeScriptCommand
@@ -23,13 +23,15 @@ STANDARD_FUNSCRIPT = """{
 	]
 }"""
 STANDARD_COMMANDS = [
-    ScriptCommand(0, GenericLinearCommand(0, 1.0)),
-    ScriptCommand(100, GenericLinearCommand(400, 0.0)),
-    ScriptCommand(1000, GenericLinearCommand(500, 0.75)),
+    ScriptCommand(0, PositionWithDurationCommand(1.0, 0)),
+    ScriptCommand(100, PositionWithDurationCommand(0.0, 400)),
+    ScriptCommand(1000, PositionWithDurationCommand(0.75, 500)),
 ]
 STANDARD_VORZE = [
-    VorzeScriptCommand(100, VorzeLinearCommand(0, 30)),
-    VorzeScriptCommand(1000, VorzeLinearCommand(150, 16)),
+    VorzeScriptCommand(
+        100, VorzePositionCommand.from_position_and_speed(0, 30, start_position=200)
+    ),
+    VorzeScriptCommand(1000, VorzePositionCommand.from_position_and_speed(150, 16)),
 ]
 
 INVERTED_FUNSCRIPT = """{
@@ -44,12 +46,14 @@ INVERTED_FUNSCRIPT = """{
 	]
 }"""
 INVERTED_COMMANDS = [
-    ScriptCommand(100, GenericLinearCommand(400, 0.0)),
-    ScriptCommand(1000, GenericLinearCommand(500, 0.75)),
+    ScriptCommand(100, PositionWithDurationCommand(0.0, 400)),
+    ScriptCommand(1000, PositionWithDurationCommand(0.75, 500)),
 ]
 INVERTED_VORZE = [
-    VorzeScriptCommand(100, VorzeLinearCommand(0, 30)),
-    VorzeScriptCommand(1000, VorzeLinearCommand(150, 16)),
+    VorzeScriptCommand(
+        100, VorzePositionCommand.from_position_and_speed(0, 30, start_position=200)
+    ),
+    VorzeScriptCommand(1000, VorzePositionCommand.from_position_and_speed(150, 16)),
 ]
 
 
@@ -61,7 +65,9 @@ INVERTED_VORZE = [
     ],
 )
 def test_load(
-    funscript: str, commands: list[ScriptCommand[GenericLinearCommand]], inverted: bool
+    funscript: str,
+    commands: list[ScriptCommand[PositionWithDurationCommand]],
+    inverted: bool,
 ) -> None:
     """Test loading from funscript."""
     orig = io.BytesIO(funscript.encode())
@@ -79,7 +85,7 @@ def test_load(
 )
 def test_dump(
     funscript: str,
-    commands: list[ScriptCommand[GenericLinearCommand]],
+    commands: list[ScriptCommand[PositionWithDurationCommand]],
     inverted: bool,
     tmp_path: Path,
 ) -> None:
@@ -99,15 +105,18 @@ def test_dump(
     ],
 )
 def test_funscript_to_vorze(
-    commands: list[ScriptCommand[GenericLinearCommand]],
-    vorze_commands: list[VorzeScriptCommand[VorzeLinearCommand]],
+    commands: list[ScriptCommand[PositionWithDurationCommand]],
+    vorze_commands: list[VorzeScriptCommand[VorzePositionCommand]],
     inverted: bool,
 ) -> None:
     """Test converting funscript to Vorze CSV."""
     expected = VorzeLinearScript(vorze_commands)
     actual = FunscriptScript(commands, inverted=inverted).to_vorze()
-    assert expected.commands == actual.commands
-    assert expected == actual
+    assert len(expected.commands) == len(actual.commands)
+    for i in range(len(actual)):
+        assert expected.commands[i].offset == actual.commands[i].offset
+        assert expected.commands[i].cmd.position == actual.commands[i].cmd.position
+        assert expected.commands[i].cmd.speed == actual.commands[i].cmd.speed
 
 
 @pytest.mark.parametrize(
@@ -118,8 +127,8 @@ def test_funscript_to_vorze(
     ],
 )
 def test_funscript_from_vorze(
-    commands: list[ScriptCommand[GenericLinearCommand]],
-    vorze_commands: list[VorzeScriptCommand[VorzeLinearCommand]],
+    commands: list[ScriptCommand[PositionWithDurationCommand]],
+    vorze_commands: list[VorzeScriptCommand[VorzePositionCommand]],
     inverted: bool,
 ) -> None:
     """Test converting funscript from Vorze CSV."""
@@ -131,6 +140,10 @@ def test_funscript_from_vorze(
     for i, expected_cmd in enumerate(expected.commands):
         actual_cmd = actual.commands[i]
         assert expected_cmd.offset == actual_cmd.offset
-        assert expected_cmd.cmd.position == actual_cmd.cmd.position
+        assert expected_cmd.cmd.value == actual_cmd.cmd.value
         # allow 50ms range to account for loss of resolution
+        assert (
+            expected_cmd.cmd.duration is not None
+            and actual_cmd.cmd.duration is not None
+        )
         assert abs(expected_cmd.cmd.duration - actual_cmd.cmd.duration) <= 50

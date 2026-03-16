@@ -1,4 +1,5 @@
 """Test cases for generic scripts."""
+
 from collections.abc import Sequence
 
 import pytest
@@ -24,7 +25,7 @@ class _TestScript(BaseScript[_TestCommand]):  # pragma: no cover
 @pytest.mark.parametrize("offsets", [(0, 50, 100), (50, 0, 100), (100, 50, 0)])
 def test_script_generic(offsets: Sequence[int]) -> None:
     """Test generic MutableSequence behavior."""
-    script = _TestScript([ScriptCommand(offset, _TestCommand()) for offset in offsets])
+    script = _TestScript([ScriptCommand(offset, _TestCommand(0)) for offset in offsets])
     assert len(script) == len(offsets)
     expected = sorted(offsets)
     assert [cmd.offset for cmd in script] == expected
@@ -37,11 +38,11 @@ def test_script_generic(offsets: Sequence[int]) -> None:
 
 def test_script_disabled() -> None:
     """Test disabled MutableSequence functionality."""
-    script = _TestScript([ScriptCommand(0, _TestCommand())])
+    script = _TestScript([ScriptCommand(0, _TestCommand(0))])
     with pytest.raises(NotImplementedError):
-        script[0] = ScriptCommand(0, _TestCommand())
+        script[0] = ScriptCommand(0, _TestCommand(0))
     with pytest.raises(NotImplementedError):
-        script.insert(0, ScriptCommand(0, _TestCommand()))
+        script.insert(0, ScriptCommand(0, _TestCommand(0)))
     with pytest.raises(NotImplementedError):
         script.reverse()
 
@@ -50,8 +51,8 @@ def test_script_disabled() -> None:
 def test_script_add(new: int) -> None:
     """Test command insertion."""
     offsets = [0, 50, 100]
-    script = _TestScript([ScriptCommand(offset, _TestCommand()) for offset in offsets])
-    script.add(ScriptCommand(new, _TestCommand()))
+    script = _TestScript([ScriptCommand(offset, _TestCommand(0)) for offset in offsets])
+    script.add(ScriptCommand(new, _TestCommand(0)))
     assert [cmd.offset for cmd in script] == sorted(offsets + [new])
 
 
@@ -59,5 +60,5 @@ def test_script_add(new: int) -> None:
 def test_script_seek(start: int) -> None:
     """Test seek iterator."""
     offsets = [0, 50, 100]
-    script = _TestScript([ScriptCommand(offset, _TestCommand()) for offset in offsets])
+    script = _TestScript([ScriptCommand(offset, _TestCommand(0)) for offset in offsets])
     assert [cmd.offset for cmd in script.seek_iter(start)] == offsets[1:]

@@ -1,3 +1,0 @@
-from typing import Any, Callable
-
-def apply_to_keys(d: dict[str, Any], f: Callable[[str], str]) -> dict[str, Any]: ...
