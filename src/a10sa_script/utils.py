@@ -1,4 +1,5 @@
 """Generic utilities."""
+
 import sys
 from typing import Literal, TypeAlias, Union
 

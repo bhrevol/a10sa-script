@@ -1,4 +1,5 @@
 """Vorze script module."""
+
 import math
 from abc import abstractmethod
 from collections.abc import Iterable
@@ -20,6 +21,10 @@ from ..exceptions import A10SAError
 @dataclass(frozen=True)
 class BaseVorzeCommand(BaseCommand):
     """Commands which can be serialized to Vorze CSV and LPEG VCSX."""
+
+    @abstractmethod
+    def vorze_eq(self, other: Self) -> bool:
+        """Return true if Vorze values in self are equal to Vorze values in other."""
 
     @abstractmethod
     def to_csv(self) -> Iterable[Any]:
@@ -70,6 +75,14 @@ class VorzeVibrateCommand(VibrateCommand, BaseVorzeCommand):
         if speed < 0 or speed > 100:
             raise ValueError("Speed must be in range [0, 100]")
         return cls(speed / cls.SPEED_DIVISOR)
+
+    def vorze_eq(self, other: Self) -> bool:
+        """Return true if Vorze values in self are equal to Vorze values in other."""
+        return isinstance(other, VorzeVibrateCommand) and self.speed == other.speed
+
+    def to_csv(self) -> tuple[int]:
+        """Return Vorze CSV row data for this command."""
+        return (self.speed,)
 
     @classmethod
     def from_csv(cls, row: list[str]) -> Self:
@@ -157,9 +170,16 @@ class VorzePositionCommand(PositionWithDurationCommand, BaseVorzeCommand):
         if speed < 0 or speed > 100:
             raise ValueError("Speed must be in range [0, 100]")
         distance = abs(stop_position - start_position)
-        duration = round(
-            math.pow(1 / speed, 1 / 1.21) * 6658 * distance / cls.POSITION_DIVISOR
-        )
+        if distance == 0:
+            speed = 0
+            duration = 0
+        else:
+            duration = round(
+                math.pow(1 / (speed or 1), 1 / 1.21)
+                * 6658
+                * distance
+                / cls.POSITION_DIVISOR
+            )
         return cls(
             value=stop_position / cls.POSITION_DIVISOR,
             duration=duration,
@@ -200,6 +220,13 @@ class VorzePositionCommand(PositionWithDurationCommand, BaseVorzeCommand):
             position=stop_position,
             speed=speed,
         )
+
+    def vorze_eq(self, other: Self) -> bool:
+        """Return true if Vorze values in self are equal to Vorze values in other."""
+        return isinstance(other, VorzePositionCommand) and (
+            self.position,
+            self.speed,
+        ) == (other.position, other.speed)
 
     def to_csv(self) -> tuple[int, int]:
         """Return Vorze CSV row data for this command."""
@@ -283,6 +310,14 @@ class VorzeRotateCommand(RotateCommand, BaseVorzeCommand):
             value *= -1
         return cls(value)
 
+    def vorze_eq(self, other: Self) -> bool:
+        """Return true if Vorze values in self are equal to Vorze values in other."""
+        return (
+            isinstance(other, VorzeRotateCommand)
+            and self.speed == other.speed
+            and (self.speed == 0 or self.clockwise == other.clockwise)
+        )
+
     def to_csv(self) -> tuple[int, int]:
         """Return Vorze CSV row data for this command."""
         return 0 if self.clockwise else 1, self.speed
@@ -328,4 +363,4 @@ class VorzeRotateCommand(RotateCommand, BaseVorzeCommand):
         cmd = data[0]
         speed = cmd & 0x7F
         clockwise = cmd & 0x80 == 0
-        return cls(speed, clockwise)
+        return cls.from_speed(speed, clockwise)

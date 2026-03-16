@@ -1,4 +1,5 @@
 """Base script module."""
+
 from abc import abstractmethod
 from collections.abc import Iterable, Iterator, MutableSequence
 from dataclasses import dataclass

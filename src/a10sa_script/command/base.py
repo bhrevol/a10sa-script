@@ -1,4 +1,5 @@
 """Generic command module."""
+
 from abc import ABC
 from dataclasses import dataclass
 from typing import ClassVar, Self
@@ -35,7 +36,7 @@ class BaseCommand(ABC):
         """Return a command instance from a Buttplug v4 output command."""
         if output_command.output_type != cls.OUTPUT_TYPE:
             raise A10SAError(
-                f"Cannot deserialize v4 {output_command.output_type} to {cls.__class__}"
+                f"Cannot deserialize v4 {output_command.output_type} to {cls.__name__}"
             )
         return cls(value=output_command.value, duration=output_command.duration)
 

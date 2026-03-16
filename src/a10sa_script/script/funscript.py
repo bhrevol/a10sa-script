@@ -1,4 +1,5 @@
 """Funjack funscript script module."""
+
 import io
 import json
 from collections.abc import Iterator

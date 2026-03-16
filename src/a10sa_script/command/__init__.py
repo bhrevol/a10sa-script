@@ -1,4 +1,5 @@
 """Device command module."""
+
 from .base import (
     BaseCommand,
     PositionCommand,

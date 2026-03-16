@@ -1,7 +1,8 @@
 """LPEG/Afesta VCSX script module."""
+
 from abc import abstractmethod
 from collections.abc import Iterable
-from typing import Any, BinaryIO, ClassVar
+from typing import Any, BinaryIO, ClassVar, Self
 
 from ..command.vorze import (
     VorzePositionCommand,
@@ -56,7 +57,7 @@ class VCSXScript(SerializableScript[_T]):
             fp.write(to_u32(cmd.offset) + cmd.cmd.to_vcsx())
 
     @classmethod
-    def load(cls, fp: BinaryIO) -> "VCSXScript[_T]":
+    def load(cls, fp: BinaryIO) -> Self:
         """Deserialize script from file.
 
         Arguments:
@@ -111,6 +112,44 @@ class VCSXPistonScript(VCSXScript[VorzePositionCommand]):
     def _command_cls(cls) -> type[VorzePositionCommand]:
         """Return command class for this script."""
         return VorzePositionCommand
+
+    @classmethod
+    def load(cls, fp: BinaryIO) -> Self:
+        """Deserialize script from file.
+
+        Arguments:
+            fp: A file-like object opened for reading.
+
+        Returns:
+            Loaded command script.
+
+        Raises:
+            ParseError: A CSV parsing error occured.
+        """
+        try:
+            magic = fp.read(len(cls.VCSX_MAGIC))
+            if magic != cls.VCSX_MAGIC:
+                raise ParseError("Invalid VCSX header")
+            version = fp.read(len(cls.VCSX_DEFAULT_VERSION))
+            size = to_uint(fp.read(4))
+            pos: int | None = None
+            commands: list[VorzeScriptCommand[VorzePositionCommand]] = []
+            for i in range(size):
+                cmd = VorzeScriptCommand(
+                    to_uint(fp.read(4)),
+                    VorzePositionCommand.from_vcsx(
+                        fp.read(VorzePositionCommand.vcsx_size()),
+                        start_position=pos or 0,
+                    ),
+                )
+                commands.append(cmd)
+                pos = cmd.cmd.position
+            return cls(
+                commands,
+                version=version,
+            )
+        except (OSError, ValueError) as e:
+            raise ParseError("Failed to parse file as VCSX data.") from e
 
 
 class VCSXCycloneScript(VCSXScript[VorzeRotateCommand]):

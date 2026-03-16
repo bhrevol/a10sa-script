@@ -1,4 +1,5 @@
 """Vorze CSV script module."""
+
 import csv
 import io
 from abc import abstractmethod

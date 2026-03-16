@@ -1,9 +1,10 @@
 """Test cases for VCSX scripts."""
+
 import io
 
 import pytest
 
-from a10sa_script.command.vorze import VorzeLinearCommand
+from a10sa_script.command.vorze import VorzePositionCommand
 from a10sa_script.command.vorze import VorzeRotateCommand
 from a10sa_script.command.vorze import VorzeVibrateCommand
 from a10sa_script.exceptions import ParseError
@@ -19,49 +20,59 @@ ONARHYTHM_DATA = (
     b"VCSX\x01Vorze_OnaRhythm\x00\x01\x42"
     b"\x00\x00\x00\x03"  # 3 commands
     b"\x00\x00\x00\x00\x00"  # 0, 0, True
-    b"\x00\x00\xB4\xC8\x14"  # 46280, 20
-    b"\x00\x00\xB5\x0A\x1A"  # 46346, 26
+    b"\x00\x00\xb4\xc8\x14"  # 46280, 20
+    b"\x00\x00\xb5\x0a\x1a"  # 46346, 26
 )
 ONARHYTHM_COMMANDS = [
-    VorzeScriptCommand(0, VorzeVibrateCommand(0)),
-    VorzeScriptCommand(46280, VorzeVibrateCommand(20)),
-    VorzeScriptCommand(46346, VorzeVibrateCommand(26)),
+    VorzeScriptCommand(0, VorzeVibrateCommand.from_speed(0)),
+    VorzeScriptCommand(46280, VorzeVibrateCommand.from_speed(20)),
+    VorzeScriptCommand(46346, VorzeVibrateCommand.from_speed(26)),
 ]
 
 PISTON_DATA = (
     b"VCSX\x01Vorze_Piston\x00\x02\x57\x42"
     b"\x00\x00\x00\06"  # 6 commands
-    b"\x00\x00\xB3\x16\x00\x92\x09"  # 45846, 146, 9
-    b"\x00\x00\xB6\xDD\x00\x00\x01"  # 46813, 0, 1
-    b"\x00\x01\x34\x40\x00\xC8\x11"  # 78912, 200, 17
+    b"\x00\x00\xb3\x16\x00\x92\x09"  # 45846, 146, 9
+    b"\x00\x00\xb6\xdd\x00\x00\x01"  # 46813, 0, 1
+    b"\x00\x01\x34\x40\x00\xc8\x11"  # 78912, 200, 17
     b"\x00\x01\x36\x35\x00\x00\x03"  # 79413, 0, 3
-    b"\x00\x01\x41\x06\x00\x92\x1B"  # 82182, 146, 27
+    b"\x00\x01\x41\x06\x00\x92\x1b"  # 82182, 146, 27
     b"\x00\x01\x42\x32\x00\x00\x17"  # 82482, 0, 23
 )
 PISTON_COMMANDS = [
-    VorzeScriptCommand(45846, VorzeLinearCommand(146, 9)),
-    VorzeScriptCommand(46813, VorzeLinearCommand(0, 1)),
-    VorzeScriptCommand(78912, VorzeLinearCommand(200, 17)),
-    VorzeScriptCommand(79413, VorzeLinearCommand(0, 3)),
-    VorzeScriptCommand(82182, VorzeLinearCommand(146, 27)),
-    VorzeScriptCommand(82482, VorzeLinearCommand(0, 23)),
+    VorzeScriptCommand(45846, VorzePositionCommand.from_position_and_speed(146, 9)),
+    VorzeScriptCommand(
+        46813, VorzePositionCommand.from_position_and_speed(0, 1, start_position=146)
+    ),
+    VorzeScriptCommand(
+        78912, VorzePositionCommand.from_position_and_speed(200, 17, start_position=0)
+    ),
+    VorzeScriptCommand(
+        79413, VorzePositionCommand.from_position_and_speed(0, 3, start_position=200)
+    ),
+    VorzeScriptCommand(
+        82182, VorzePositionCommand.from_position_and_speed(146, 27, start_position=0)
+    ),
+    VorzeScriptCommand(
+        82482, VorzePositionCommand.from_position_and_speed(0, 23, start_position=146)
+    ),
 ]
 
 CYCLONE_DATA = (
     b"VCSX\x01Vorze_CycloneSA\x00\x01\x42"
     b"\x00\x00\x00\x05"  # 5 commands
     b"\x00\x00\x00\x00\x00"  # 0, 0, True
-    b"\x00\x00\xB3\xFF\x86"  # 46079, 6, False
-    b"\x00\x00\xB4\x63\x8D"  # 46179, 13, False
-    b"\x00\x00\xB4\xC8\x14"  # 46280, 20, True
-    b"\x00\x00\xB5\x0A\x1A"  # 46346, 26, True
+    b"\x00\x00\xb3\xff\x86"  # 46079, 6, False
+    b"\x00\x00\xb4\x63\x8d"  # 46179, 13, False
+    b"\x00\x00\xb4\xc8\x14"  # 46280, 20, True
+    b"\x00\x00\xb5\x0a\x1a"  # 46346, 26, True
 )
 CYCLONE_COMMANDS = [
-    VorzeScriptCommand(0, VorzeRotateCommand(0, True)),
-    VorzeScriptCommand(46079, VorzeRotateCommand(6, False)),
-    VorzeScriptCommand(46179, VorzeRotateCommand(13, False)),
-    VorzeScriptCommand(46280, VorzeRotateCommand(20, True)),
-    VorzeScriptCommand(46346, VorzeRotateCommand(26, True)),
+    VorzeScriptCommand(0, VorzeRotateCommand.from_speed(0, True)),
+    VorzeScriptCommand(46079, VorzeRotateCommand.from_speed(6, False)),
+    VorzeScriptCommand(46179, VorzeRotateCommand.from_speed(13, False)),
+    VorzeScriptCommand(46280, VorzeRotateCommand.from_speed(20, True)),
+    VorzeScriptCommand(46346, VorzeRotateCommand.from_speed(26, True)),
 ]
 
 
@@ -83,7 +94,10 @@ def test_load(
     orig.seek(0)
     script = script_cls.load(orig)
     expected = script_cls(commands)
-    assert script == expected
+    assert len(expected.commands) == len(script.commands)
+    for i in range(len(expected.commands)):
+        assert expected[i].offset == script[i].offset
+        assert expected[i].cmd.vorze_eq(script[i].cmd)
 
 
 @pytest.mark.parametrize(
