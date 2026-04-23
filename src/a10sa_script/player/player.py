@@ -199,8 +199,6 @@ class ScriptPlayer(AbstractAsyncContextManager["ScriptPlayer[T]"]):
             await self.join(cancel=True)
             end = loop.time()
             offset -= round((end - start) * 1000)
-            if offset < 0:
-                offset = 0
             self._offset = offset
             self.play()
         else:
