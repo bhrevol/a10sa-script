@@ -164,30 +164,30 @@ files = [
 
 [[package]]
 name = "bleak"
-version = "2.1.1"
+version = "3.0.2"
 requires_python = ">=3.10"
 summary = "Bluetooth Low Energy platform Agnostic Klient"
 groups = ["ble"]
 dependencies = [
-    "async-timeout>=3.0.0; python_version < \"3.11\"",
-    "dbus-fast>=1.83.0; platform_system == \"Linux\"",
-    "pyobjc-core>=10.3; platform_system == \"Darwin\"",
-    "pyobjc-framework-CoreBluetooth>=10.3; platform_system == \"Darwin\"",
-    "pyobjc-framework-libdispatch>=10.3; platform_system == \"Darwin\"",
-    "typing-extensions>=4.7.0; python_version < \"3.12\"",
-    "winrt-Windows-Devices-Bluetooth-Advertisement>=3.1; platform_system == \"Windows\"",
-    "winrt-Windows-Devices-Bluetooth-GenericAttributeProfile>=3.1; platform_system == \"Windows\"",
-    "winrt-Windows-Devices-Bluetooth>=3.1; platform_system == \"Windows\"",
-    "winrt-Windows-Devices-Enumeration>=3.1; platform_system == \"Windows\"",
-    "winrt-Windows-Devices-Radios>=3.1; platform_system == \"Windows\"",
-    "winrt-Windows-Foundation-Collections>=3.1; platform_system == \"Windows\"",
-    "winrt-Windows-Foundation>=3.1; platform_system == \"Windows\"",
-    "winrt-Windows-Storage-Streams>=3.1; platform_system == \"Windows\"",
-    "winrt-runtime>=3.1; platform_system == \"Windows\"",
+    "async-timeout>=3.0.0; python_full_version < \"3.11\"",
+    "dbus-fast>=1.83.0; sys_platform == \"linux\"",
+    "pyobjc-core>=10.3; sys_platform == \"darwin\"",
+    "pyobjc-framework-corebluetooth>=10.3; sys_platform == \"darwin\"",
+    "pyobjc-framework-libdispatch>=10.3; sys_platform == \"darwin\"",
+    "typing-extensions>=4.7.0; python_full_version < \"3.12\"",
+    "winrt-runtime>=3.1; sys_platform == \"win32\"",
+    "winrt-windows-devices-bluetooth-advertisement>=3.1; sys_platform == \"win32\"",
+    "winrt-windows-devices-bluetooth-genericattributeprofile>=3.1; sys_platform == \"win32\"",
+    "winrt-windows-devices-bluetooth>=3.1; sys_platform == \"win32\"",
+    "winrt-windows-devices-enumeration>=3.1; sys_platform == \"win32\"",
+    "winrt-windows-devices-radios>=3.1; sys_platform == \"win32\"",
+    "winrt-windows-foundation-collections>=3.1; sys_platform == \"win32\"",
+    "winrt-windows-foundation>=3.1; sys_platform == \"win32\"",
+    "winrt-windows-storage-streams>=3.1; sys_platform == \"win32\"",
 ]
 files = [
-    {file = "bleak-2.1.1-py3-none-any.whl", hash = "sha256:61ac1925073b580c896a92a8c404088c5e5ec9dc3c5bd6fc17554a15779d83de"},
-    {file = "bleak-2.1.1.tar.gz", hash = "sha256:4600cc5852f2392ce886547e127623f188e689489c5946d422172adf80635cf9"},
+    {file = "bleak-3.0.2-py3-none-any.whl", hash = "sha256:39092feb9e83f1df5ad2f88e837723c7211c982ce9e9cda6235104bc2ebe0d0d"},
+    {file = "bleak-3.0.2.tar.gz", hash = "sha256:c2229cb8238d5876b4bd05c74bf7a1aea1f88da39d2e51ac9dfd5cc319d5265f"},
 ]
 
 [[package]]
@@ -656,39 +656,49 @@ files = [
 
 [[package]]
 name = "dbus-fast"
-version = "4.0.0"
+version = "5.0.22"
 requires_python = ">=3.10"
 summary = "A faster version of dbus-next"
 groups = ["ble"]
-marker = "platform_system == \"Linux\""
+marker = "sys_platform == \"linux\""
 files = [
-    {file = "dbus_fast-4.0.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:e65a68793ce650d94ac86021a473988715197762b24c72c510833e9111c5170d"},
-    {file = "dbus_fast-4.0.0-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:512f25a0705903047e9b55d2bc3724f06dcbfb77e0b13f10a7eb835679d3705c"},
-    {file = "dbus_fast-4.0.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:28209c72c36f8e2bb2152c02598d353e9442d53d751efbf49870bc37ac3afcad"},
-    {file = "dbus_fast-4.0.0-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:618931126219f23285b33b5825dc40cfb166c8e6554f800f7c53dfb5f368289b"},
-    {file = "dbus_fast-4.0.0-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:0615063551e8d4b34bee778885ab56be3ef168df38f9bfc4364d8c80687e2df4"},
-    {file = "dbus_fast-4.0.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:621ad63b0599fc125d4574d358bbc642089c910dcc9e42ae23d32ab807c8e5af"},
-    {file = "dbus_fast-4.0.0-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:bfb269a9ed3b3ab29932b2948de52d7ea2eebfcad0c641ad6b25024b048d0b68"},
-    {file = "dbus_fast-4.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:aa367aaad3a868dfb9373eca8868a2a0810bac6cbe35b67460682127834c2460"},
-    {file = "dbus_fast-4.0.0-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:2283e9c22411b1307fa3e3586fd4b42b44cae90e8a39f4fb4942a97a885d437b"},
-    {file = "dbus_fast-4.0.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:0a91ec3707b743c2e211fa9ecd08ee483c3af19a2028ad90d2911a7e17d20737"},
-    {file = "dbus_fast-4.0.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:d1b7274af1769359e8b02c546eb368f4cc43fce4ba4286ee97f357d395372492"},
-    {file = "dbus_fast-4.0.0-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:3b83681987b2986af050b728ecea5e230252c09db3c9593cead5b073f6391f41"},
-    {file = "dbus_fast-4.0.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:191c9053c9d54356f0c5c202e2fab9ad2508b27b8b224a184cf367591a2586cb"},
-    {file = "dbus_fast-4.0.0-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:c34c748b71c6fc71e47ffe901ccfcd4a01e98d5fa80f98c732945da45d9fc614"},
-    {file = "dbus_fast-4.0.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:39ac2e639833320678c2c4e64931b28a3e10c57111c8c24967f1a16de69b92b0"},
-    {file = "dbus_fast-4.0.0-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:ddd92e5179ca5af5348ac34fb6a7c279d1485a715d560bcb8ff8443296fb1aff"},
-    {file = "dbus_fast-4.0.0-cp314-cp314-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:9e53d7e19d2433f2ca1d811856e4b80a3b3126f361703e5caf6e7f086a03b994"},
-    {file = "dbus_fast-4.0.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:6b430760c925e0b695b6f1a3f21f6e57954807cab4704a3bc4bc5f311261016b"},
-    {file = "dbus_fast-4.0.0-cp314-cp314-manylinux_2_41_x86_64.whl", hash = "sha256:2818d76da8291202779fe8cb23edc62488786eee791f332c2c40350552288d8b"},
-    {file = "dbus_fast-4.0.0-cp314-cp314-musllinux_1_2_aarch64.whl", hash = "sha256:0b2aaf80991734e2bbff60b0f57b70322668acccb8bb15a0380ca80b8f8c5d72"},
-    {file = "dbus_fast-4.0.0-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:93a864c9e39ab03988c95e2cd9368a4b6560887d53a197037dfc73e7d966b690"},
-    {file = "dbus_fast-4.0.0-cp314-cp314t-macosx_11_0_arm64.whl", hash = "sha256:f36526cb043ab630ee458b58965fcf1e6d51d742f11df8ba2756cc280a21899d"},
-    {file = "dbus_fast-4.0.0-cp314-cp314t-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:c71b369f8fd743c0d03e5fd566ff5d886cb5ad7f3d187f36185a372096a2a096"},
-    {file = "dbus_fast-4.0.0-cp314-cp314t-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:ffc16ee344e68a907a40327074bca736086897f2e783541086eedb5e6855f3f0"},
-    {file = "dbus_fast-4.0.0-cp314-cp314t-musllinux_1_2_aarch64.whl", hash = "sha256:1f8f4b0f8af730c39bbb83de1e299e706fbd7f7f3955764471213b013fa59516"},
-    {file = "dbus_fast-4.0.0-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:f6af190d8306f1bd506740c39701f5c211aa31ac660a3fcb401ebb97d33166c7"},
-    {file = "dbus_fast-4.0.0.tar.gz", hash = "sha256:e1d3ee49a4a81524d7caaa2d5a31fc71075a1c977b661df958cee24bef86b8fe"},
+    {file = "dbus_fast-5.0.22-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:f0926e4cf49989b4ec8233e8fd462eb35a640fcfe81bb75d91675dd47489022b"},
+    {file = "dbus_fast-5.0.22-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:846f9a6602b4383f989201f7851459fb225a8912cd24b38e63894748545c3040"},
+    {file = "dbus_fast-5.0.22-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:886b43446b6fdc3986befbbb88db1365b14e49dd0a7edf84c2c67ac66c7160a4"},
+    {file = "dbus_fast-5.0.22-cp311-cp311-manylinux_2_31_riscv64.manylinux_2_39_riscv64.whl", hash = "sha256:3a699fca957acc845ddb12b47f741dba23ce147fdb93583e0c7e7bad3e9b2355"},
+    {file = "dbus_fast-5.0.22-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:9a5b05fd4973862042e5bee2c5e8c5a15297e0b33a975bf25b44becf7bcb3618"},
+    {file = "dbus_fast-5.0.22-cp311-cp311-musllinux_1_2_riscv64.whl", hash = "sha256:6c4dae5292a7924ec062815c34b49043d8386cd22e165f9fb4012de00997cdf1"},
+    {file = "dbus_fast-5.0.22-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:b7d90a52be79acbaef257f3a81d5b9b9dec40f1bad29429ac5c7802684fb9b84"},
+    {file = "dbus_fast-5.0.22-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:f72b77be63f7bb24cf42936ad10994d40f43fed691f857f7854b5882d6a5227c"},
+    {file = "dbus_fast-5.0.22-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:8f0bcad7f71d2304a68a5b0bc0d24c3fcc14710a2ffcf5f2a27521e3aece71ca"},
+    {file = "dbus_fast-5.0.22-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:4ffcf16034f71a801bd2108aeffb6337d104c9459e8b1a218d16a917c8a2d2e9"},
+    {file = "dbus_fast-5.0.22-cp312-cp312-manylinux_2_31_riscv64.manylinux_2_39_riscv64.whl", hash = "sha256:98de6d2c200d8182e1fd0bdde3206fa556b8fa14ebb752a044cd8daa87b4658c"},
+    {file = "dbus_fast-5.0.22-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:b013437b66dc22b8d9aca5e0b0d46bf1980208a143409469fe482d9684a2a717"},
+    {file = "dbus_fast-5.0.22-cp312-cp312-musllinux_1_2_riscv64.whl", hash = "sha256:855f15b7f7805171da2b82de1c317d01cfbb9fb8ac61fcc1e8dec54d8c69fab7"},
+    {file = "dbus_fast-5.0.22-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:7d1c42963235cfc015a2d2b8c5fe42b65387493b4ad4ce0ec122601c805e6742"},
+    {file = "dbus_fast-5.0.22-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:26e26b409e1e6edf5e2a4df8d192625fb38876b074fb5c7d0a5b15c5792e549d"},
+    {file = "dbus_fast-5.0.22-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:de10ff3b3cb2acb1c09fe17158a470519000d37bb5ee5fd69c4075e81ce8dcf5"},
+    {file = "dbus_fast-5.0.22-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:979761985fe343c701f2b7575285d6e370123f7231d4656209ef7824bb686bbb"},
+    {file = "dbus_fast-5.0.22-cp313-cp313-manylinux_2_31_riscv64.manylinux_2_39_riscv64.whl", hash = "sha256:fb73f1d8374253b7c17d69e902cf2ded1bfb089cb6ae67c10b4e0bdfe1b8fe08"},
+    {file = "dbus_fast-5.0.22-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:b67a02037eb58bcf9e445df60ea0d9d7346fd334abde3aa62e03c75823b53979"},
+    {file = "dbus_fast-5.0.22-cp313-cp313-musllinux_1_2_riscv64.whl", hash = "sha256:83940ea00d7ee2f0c5bcb5d19d7d05e7949e52d467616a0b735d72e7285402ec"},
+    {file = "dbus_fast-5.0.22-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:279d212e9fb262d595af2e4b5b9e951bc00c73a5c8eeb50f158caa13705b9c84"},
+    {file = "dbus_fast-5.0.22-cp314-cp314-macosx_11_0_arm64.whl", hash = "sha256:511655d915692f55b8c5f5a535acf80cca9c6d1a35384db7fcfdabaae05dd837"},
+    {file = "dbus_fast-5.0.22-cp314-cp314-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:703e0f8f9af52e8e053394ee2b578042be0c3d8ea2b1488f9db8cb14393cc13f"},
+    {file = "dbus_fast-5.0.22-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:eb1d7e8e65561d0fd438004fd9e0f981c8a862912fed58dd4e29db1936c39d73"},
+    {file = "dbus_fast-5.0.22-cp314-cp314-manylinux_2_31_riscv64.manylinux_2_39_riscv64.whl", hash = "sha256:959fab6420897ab99410e67d6f9f9a7f6f4cedb6014700768f5e2d71dbff5dc6"},
+    {file = "dbus_fast-5.0.22-cp314-cp314-manylinux_2_41_x86_64.whl", hash = "sha256:eb31c5ff339a7071b914617a69d5b7c6ba7d411da4b01a5f9b5b2fe51e9d1301"},
+    {file = "dbus_fast-5.0.22-cp314-cp314-musllinux_1_2_aarch64.whl", hash = "sha256:856f0543c593f3480e93e67bcd1aa4ddc1d94a6076cfd3ad4e0f5e2b01b33dc3"},
+    {file = "dbus_fast-5.0.22-cp314-cp314-musllinux_1_2_riscv64.whl", hash = "sha256:96d231d128c1f46f263790335897195dde9dac2f38571782db8ae1d8647bd548"},
+    {file = "dbus_fast-5.0.22-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:595bd3ccfd8318cbafff79f33a15709fee3728724fd61d5fa220080d73b574cb"},
+    {file = "dbus_fast-5.0.22-cp314-cp314t-macosx_11_0_arm64.whl", hash = "sha256:69a077c296eaab8c30160e861b5514c33d99d67d41d17dbf02e89aae44543b11"},
+    {file = "dbus_fast-5.0.22-cp314-cp314t-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:04bac97d0cb754a4d13037d0132517f1df28192d6e0568a0bf6df06623062285"},
+    {file = "dbus_fast-5.0.22-cp314-cp314t-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:3eb57d592d84b0bb90e0c077db7ecb61562f49cc9b86a3ef08cbe17243e9cc4f"},
+    {file = "dbus_fast-5.0.22-cp314-cp314t-manylinux_2_31_riscv64.manylinux_2_39_riscv64.whl", hash = "sha256:de4d235d1282ebb3ab65b6cddab84e914c045d92ceb381ddcbdbaf66bf1fb132"},
+    {file = "dbus_fast-5.0.22-cp314-cp314t-musllinux_1_2_aarch64.whl", hash = "sha256:048f34299fbe82d7b87c56f47e8bd83f62339a4517685abc6671d603a55d2c89"},
+    {file = "dbus_fast-5.0.22-cp314-cp314t-musllinux_1_2_riscv64.whl", hash = "sha256:92df9fb6d8adeb17b534621c2ee730295bbe1d0c2584d5c82b1db478e3f04e8f"},
+    {file = "dbus_fast-5.0.22-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:7be4271e38251f1ad726962dec60da887c8ed352d157352e4fc27f56aece5c5d"},
+    {file = "dbus_fast-5.0.22.tar.gz", hash = "sha256:34dc67d7d21a12399828dd13e63b352750580beea54ea7c729e708f2d2905fef"},
 ]
 
 [[package]]
@@ -1384,81 +1394,89 @@ files = [
 
 [[package]]
 name = "pyobjc-core"
-version = "12.1"
+version = "12.2.1"
 requires_python = ">=3.10"
 summary = "Python<->ObjC Interoperability Module"
 groups = ["ble"]
-marker = "platform_system == \"Darwin\""
+marker = "sys_platform == \"darwin\""
 files = [
-    {file = "pyobjc_core-12.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:c918ebca280925e7fcb14c5c43ce12dcb9574a33cccb889be7c8c17f3bcce8b6"},
-    {file = "pyobjc_core-12.1-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:818bcc6723561f207e5b5453efe9703f34bc8781d11ce9b8be286bb415eb4962"},
-    {file = "pyobjc_core-12.1-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:01c0cf500596f03e21c23aef9b5f326b9fb1f8f118cf0d8b66749b6cf4cbb37a"},
-    {file = "pyobjc_core-12.1-cp313-cp313t-macosx_10_13_universal2.whl", hash = "sha256:177aaca84bb369a483e4961186704f64b2697708046745f8167e818d968c88fc"},
-    {file = "pyobjc_core-12.1-cp314-cp314-macosx_10_15_universal2.whl", hash = "sha256:844515f5d86395b979d02152576e7dee9cc679acc0b32dc626ef5bda315eaa43"},
-    {file = "pyobjc_core-12.1-cp314-cp314t-macosx_10_15_universal2.whl", hash = "sha256:453b191df1a4b80e756445b935491b974714456ae2cbae816840bd96f86db882"},
-    {file = "pyobjc_core-12.1.tar.gz", hash = "sha256:2bb3903f5387f72422145e1466b3ac3f7f0ef2e9960afa9bcd8961c5cbf8bd21"},
+    {file = "pyobjc_core-12.2.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:24b76a63caf0b5369d4a377c7c0438cd70df81539057af3db839bfaa3579e04a"},
+    {file = "pyobjc_core-12.2.1-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:a64232bb27ed101d4adc7d42b0e64a6d3331aac7bee7861c037a6777a163f10b"},
+    {file = "pyobjc_core-12.2.1-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:af101222762665a4125157906cb4b23f5d5a63d3851d5e0504f72a1eaaa2cfd2"},
+    {file = "pyobjc_core-12.2.1-cp313-cp313t-macosx_10_13_universal2.whl", hash = "sha256:efe465e3ecc6fc73f7c7622620345d134a8d34564ab1c29d8247e45f4ed55071"},
+    {file = "pyobjc_core-12.2.1-cp314-cp314-macosx_10_15_universal2.whl", hash = "sha256:2b8fc0531c27277325e113ac00b8a72a82e6145f0a88175b9425d8de814ff69a"},
+    {file = "pyobjc_core-12.2.1-cp314-cp314t-macosx_10_15_universal2.whl", hash = "sha256:9bef500f979e22d54f9da3aaebf6a48f873234b324858bd69256055a318955c7"},
+    {file = "pyobjc_core-12.2.1-cp315-cp315-macosx_10_15_universal2.whl", hash = "sha256:047c226eeb58a2993ace5e8904e71cc9426ee20d064c617f8fbf32717d37093e"},
+    {file = "pyobjc_core-12.2.1-cp315-cp315t-macosx_10_15_universal2.whl", hash = "sha256:1188613805336270279570467e4455b74cb6c0f60913ac74c917ee1c37cfaecb"},
+    {file = "pyobjc_core-12.2.1.tar.gz", hash = "sha256:7a7b9b018402342cf32bf1956366896350fbe5c0478cb3ef59778f77abed7f07"},
 ]
 
 [[package]]
 name = "pyobjc-framework-cocoa"
-version = "12.1"
+version = "12.2.1"
 requires_python = ">=3.10"
 summary = "Wrappers for the Cocoa frameworks on macOS"
 groups = ["ble"]
-marker = "platform_system == \"Darwin\""
+marker = "sys_platform == \"darwin\""
 dependencies = [
-    "pyobjc-core>=12.1",
+    "pyobjc-core>=12.2.1",
 ]
 files = [
-    {file = "pyobjc_framework_cocoa-12.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:f52228bcf38da64b77328787967d464e28b981492b33a7675585141e1b0a01e6"},
-    {file = "pyobjc_framework_cocoa-12.1-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:547c182837214b7ec4796dac5aee3aa25abc665757b75d7f44f83c994bcb0858"},
-    {file = "pyobjc_framework_cocoa-12.1-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:5a3dcd491cacc2f5a197142b3c556d8aafa3963011110102a093349017705118"},
-    {file = "pyobjc_framework_cocoa-12.1-cp313-cp313t-macosx_10_13_universal2.whl", hash = "sha256:914b74328c22d8ca261d78c23ef2befc29776e0b85555973927b338c5734ca44"},
-    {file = "pyobjc_framework_cocoa-12.1-cp314-cp314-macosx_10_15_universal2.whl", hash = "sha256:03342a60fc0015bcdf9b93ac0b4f457d3938e9ef761b28df9564c91a14f0129a"},
-    {file = "pyobjc_framework_cocoa-12.1-cp314-cp314t-macosx_10_15_universal2.whl", hash = "sha256:6ba1dc1bfa4da42d04e93d2363491275fb2e2be5c20790e561c8a9e09b8cf2cc"},
-    {file = "pyobjc_framework_cocoa-12.1.tar.gz", hash = "sha256:5556c87db95711b985d5efdaaf01c917ddd41d148b1e52a0c66b1a2e2c5c1640"},
+    {file = "pyobjc_framework_cocoa-12.2.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:dc6da84f4fc62cc25463bbb85e77a57b8d5ac6caf9a60702daf2edb601332f15"},
+    {file = "pyobjc_framework_cocoa-12.2.1-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:28b9b8bab1c36efb94744786918752d0c1842f5fbb67e7d5ca97b5f736512080"},
+    {file = "pyobjc_framework_cocoa-12.2.1-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:3b74a78fa7803e547b32e5e8ec1b49987b52fe318383e793bc6cd49b80efbd9f"},
+    {file = "pyobjc_framework_cocoa-12.2.1-cp313-cp313t-macosx_10_13_universal2.whl", hash = "sha256:dc2eaca2f13c7bcd8e41e51a372e47825dea9dd3126108760eed7ba883d2945c"},
+    {file = "pyobjc_framework_cocoa-12.2.1-cp314-cp314-macosx_10_15_universal2.whl", hash = "sha256:b386c324d64ae565c1f6b7dfb77be68f640a1c7c23caa6966ab661131f519561"},
+    {file = "pyobjc_framework_cocoa-12.2.1-cp314-cp314t-macosx_10_15_universal2.whl", hash = "sha256:a6c584e2af0813cb2f6103b184e632665a26f58c1bd5b08ffd6e95a19c617f7b"},
+    {file = "pyobjc_framework_cocoa-12.2.1-cp315-cp315-macosx_10_15_universal2.whl", hash = "sha256:b6023657b8d6cc049a21bd6b4752425f2f53c42f9f0b02d64c7608cc484bf103"},
+    {file = "pyobjc_framework_cocoa-12.2.1-cp315-cp315t-macosx_10_15_universal2.whl", hash = "sha256:c685ccd8e266a07cf912a2c5a13b1f2eff2a868a1aff163b4801b4687bd425e1"},
+    {file = "pyobjc_framework_cocoa-12.2.1.tar.gz", hash = "sha256:b94b37fe5730e5ae1fb0052912cd174e6ec329b0bfba4a012ae5db1014b5864b"},
 ]
 
 [[package]]
 name = "pyobjc-framework-corebluetooth"
-version = "12.1"
+version = "12.2.1"
 requires_python = ">=3.10"
 summary = "Wrappers for the framework CoreBluetooth on macOS"
 groups = ["ble"]
-marker = "platform_system == \"Darwin\""
+marker = "sys_platform == \"darwin\""
 dependencies = [
-    "pyobjc-core>=12.1",
-    "pyobjc-framework-Cocoa>=12.1",
+    "pyobjc-core>=12.2.1",
+    "pyobjc-framework-Cocoa>=12.2.1",
 ]
 files = [
-    {file = "pyobjc_framework_corebluetooth-12.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:37e6456c8a076bd5a2bdd781d0324edd5e7397ef9ac9234a97433b522efb13cf"},
-    {file = "pyobjc_framework_corebluetooth-12.1-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:fe72c9732ee6c5c793b9543f08c1f5bdd98cd95dfc9d96efd5708ec9d6eeb213"},
-    {file = "pyobjc_framework_corebluetooth-12.1-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:5a894f695e6c672f0260327103a31ad8b98f8d4fb9516a0383db79a82a7e58dc"},
-    {file = "pyobjc_framework_corebluetooth-12.1-cp313-cp313t-macosx_10_13_universal2.whl", hash = "sha256:1daf07a0047c3ed89fab84ad5f6769537306733b6a6e92e631581a0f419e3f32"},
-    {file = "pyobjc_framework_corebluetooth-12.1-cp314-cp314-macosx_10_15_universal2.whl", hash = "sha256:15ba5207ca626dffe57ccb7c1beaf01f93930159564211cb97d744eaf0d812aa"},
-    {file = "pyobjc_framework_corebluetooth-12.1-cp314-cp314t-macosx_10_15_universal2.whl", hash = "sha256:e5385195bd365a49ce70e2fb29953681eefbe68a7b15ecc2493981d2fb4a02b1"},
-    {file = "pyobjc_framework_corebluetooth-12.1.tar.gz", hash = "sha256:8060c1466d90bbb9100741a1091bb79975d9ba43911c9841599879fc45c2bbe0"},
+    {file = "pyobjc_framework_corebluetooth-12.2.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:f11df7052fa2d0524a9dadbc9c578fd3b8f3a350431edfa4ffa9e0a74b6faa32"},
+    {file = "pyobjc_framework_corebluetooth-12.2.1-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:2f8d2ed65c0e98ba044b6a7fc2f9a290a5c579a28d33a57c642f8617ccbcca0f"},
+    {file = "pyobjc_framework_corebluetooth-12.2.1-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:30a26eef36c250fc14e73335641e24f764b32b7e42bae945a5d8a1c2347040b5"},
+    {file = "pyobjc_framework_corebluetooth-12.2.1-cp313-cp313t-macosx_10_13_universal2.whl", hash = "sha256:756933b9ce6160a986c8877ab667659fa2d8e15aff28d0981b5284fbdd1ea735"},
+    {file = "pyobjc_framework_corebluetooth-12.2.1-cp314-cp314-macosx_10_15_universal2.whl", hash = "sha256:2a2e6d56f51e4ca3e3b9766ef34150a9a7ce5f0cf4f9ee879ec10923af58e97e"},
+    {file = "pyobjc_framework_corebluetooth-12.2.1-cp314-cp314t-macosx_10_15_universal2.whl", hash = "sha256:50d7e4245dbdc8789dcc1f11fca2e633aa126a298b09db62f8216531fe107ee2"},
+    {file = "pyobjc_framework_corebluetooth-12.2.1-cp315-cp315-macosx_10_15_universal2.whl", hash = "sha256:c8d126c56b71c25218be186930a1b41739f83e931726a52e3298beeb170c5e5b"},
+    {file = "pyobjc_framework_corebluetooth-12.2.1-cp315-cp315t-macosx_10_15_universal2.whl", hash = "sha256:81023518feb75e9b2b676b28198955c51ae00548cf23c73c524c7101263b68db"},
+    {file = "pyobjc_framework_corebluetooth-12.2.1.tar.gz", hash = "sha256:7dbb285295097205bebbcb11f55161e5faa02111108fb7b17536176e31971eb0"},
 ]
 
 [[package]]
 name = "pyobjc-framework-libdispatch"
-version = "12.1"
+version = "12.2.1"
 requires_python = ">=3.10"
 summary = "Wrappers for libdispatch on macOS"
 groups = ["ble"]
-marker = "platform_system == \"Darwin\""
+marker = "sys_platform == \"darwin\""
 dependencies = [
-    "pyobjc-core>=12.1",
-    "pyobjc-framework-Cocoa>=12.1",
+    "pyobjc-core>=12.2.1",
+    "pyobjc-framework-Cocoa>=12.2.1",
 ]
 files = [
-    {file = "pyobjc_framework_libdispatch-12.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:954cc2d817b71383bd267cc5cd27d83536c5f879539122353ca59f1c945ac706"},
-    {file = "pyobjc_framework_libdispatch-12.1-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:0e9570d7a9a3136f54b0b834683bf3f206acd5df0e421c30f8fd4f8b9b556789"},
-    {file = "pyobjc_framework_libdispatch-12.1-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:58ffce5e6bcd7456b4311009480b195b9f22107b7682fb0835d4908af5a68ad0"},
-    {file = "pyobjc_framework_libdispatch-12.1-cp313-cp313t-macosx_10_13_universal2.whl", hash = "sha256:e9f49517e253716e40a0009412151f527005eec0b9a2311ac63ecac1bdf02332"},
-    {file = "pyobjc_framework_libdispatch-12.1-cp314-cp314-macosx_10_15_universal2.whl", hash = "sha256:0ebfd9e4446ab6528126bff25cfb09e4213ddf992b3208978911cfd3152e45f5"},
-    {file = "pyobjc_framework_libdispatch-12.1-cp314-cp314t-macosx_10_15_universal2.whl", hash = "sha256:23fc9915cba328216b6a736c7a48438a16213f16dfb467f69506300b95938cc7"},
-    {file = "pyobjc_framework_libdispatch-12.1.tar.gz", hash = "sha256:4035535b4fae1b5e976f3e0e38b6e3442ffea1b8aa178d0ca89faa9b8ecdea41"},
+    {file = "pyobjc_framework_libdispatch-12.2.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:0e295775c76eace23f60e53ef74b0f79429c665f91a870e4665c4b9887466efa"},
+    {file = "pyobjc_framework_libdispatch-12.2.1-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:8f41b5021ff70bc51220a79b41ebd1eacb55fe3ceb67448594f30e491a2c42a5"},
+    {file = "pyobjc_framework_libdispatch-12.2.1-cp313-cp313-macosx_10_13_universal2.whl", hash = "sha256:9c0ebf99520083bf17c007a544c100056a0d4ae5c346fb89e1bdfe6d041f16f2"},
+    {file = "pyobjc_framework_libdispatch-12.2.1-cp313-cp313t-macosx_10_13_universal2.whl", hash = "sha256:3f56fd71b963a0b6e440ed2f0ea2fb635221758b7eb908ba38f96f5144b83ca3"},
+    {file = "pyobjc_framework_libdispatch-12.2.1-cp314-cp314-macosx_10_15_universal2.whl", hash = "sha256:999bad9a2c9198c837ba8f57a3ca9f05b4fc4bf7b69318baaa266dd2ab2fc8f7"},
+    {file = "pyobjc_framework_libdispatch-12.2.1-cp314-cp314t-macosx_10_15_universal2.whl", hash = "sha256:3fc93971f40d9757995c1e4b995a1614a468a5178be27e3d81e9bdc0b5e3cf75"},
+    {file = "pyobjc_framework_libdispatch-12.2.1-cp315-cp315-macosx_10_15_universal2.whl", hash = "sha256:26a096c81c8cf272f4f1bb8f6c4b7565e005d273d218b53b83d925da5292633f"},
+    {file = "pyobjc_framework_libdispatch-12.2.1-cp315-cp315t-macosx_10_15_universal2.whl", hash = "sha256:82c6512fb4985f3bcd6b60b0cff79a4b483b44d1d2e5405010e34dd4b60aa01b"},
+    {file = "pyobjc_framework_libdispatch-12.2.1.tar.gz", hash = "sha256:0d24eda41c6c258135077f60d410e704bc7b5a67adcb2ca463918896c7363795"},
 ]
 
 [[package]]
@@ -2312,7 +2330,7 @@ version = "3.2.1"
 requires_python = ">=3.9"
 summary = "Python projection of Windows Runtime (WinRT) APIs"
 groups = ["ble"]
-marker = "platform_system == \"Windows\""
+marker = "sys_platform == \"win32\""
 dependencies = [
     "typing-extensions>=4.12.2",
 ]
@@ -2338,7 +2356,7 @@ version = "3.2.1"
 requires_python = ">=3.9"
 summary = "Python projection of Windows Runtime (WinRT) APIs"
 groups = ["ble"]
-marker = "platform_system == \"Windows\""
+marker = "sys_platform == \"win32\""
 dependencies = [
     "winrt-runtime~=3.2.1.0",
 ]
@@ -2364,7 +2382,7 @@ version = "3.2.1"
 requires_python = ">=3.9"
 summary = "Python projection of Windows Runtime (WinRT) APIs"
 groups = ["ble"]
-marker = "platform_system == \"Windows\""
+marker = "sys_platform == \"win32\""
 dependencies = [
     "winrt-runtime~=3.2.1.0",
 ]
@@ -2390,7 +2408,7 @@ version = "3.2.1"
 requires_python = ">=3.9"
 summary = "Python projection of Windows Runtime (WinRT) APIs"
 groups = ["ble"]
-marker = "platform_system == \"Windows\""
+marker = "sys_platform == \"win32\""
 dependencies = [
     "winrt-runtime~=3.2.1.0",
 ]
@@ -2416,7 +2434,7 @@ version = "3.2.1"
 requires_python = ">=3.9"
 summary = "Python projection of Windows Runtime (WinRT) APIs"
 groups = ["ble"]
-marker = "platform_system == \"Windows\""
+marker = "sys_platform == \"win32\""
 dependencies = [
     "winrt-runtime~=3.2.1.0",
 ]
@@ -2442,7 +2460,7 @@ version = "3.2.1"
 requires_python = ">=3.9"
 summary = "Python projection of Windows Runtime (WinRT) APIs"
 groups = ["ble"]
-marker = "platform_system == \"Windows\""
+marker = "sys_platform == \"win32\""
 dependencies = [
     "winrt-runtime~=3.2.1.0",
 ]
@@ -2468,7 +2486,7 @@ version = "3.2.1"
 requires_python = ">=3.9"
 summary = "Python projection of Windows Runtime (WinRT) APIs"
 groups = ["ble"]
-marker = "platform_system == \"Windows\""
+marker = "sys_platform == \"win32\""
 dependencies = [
     "winrt-runtime~=3.2.1.0",
 ]
@@ -2494,7 +2512,7 @@ version = "3.2.1"
 requires_python = ">=3.9"
 summary = "Python projection of Windows Runtime (WinRT) APIs"
 groups = ["ble"]
-marker = "platform_system == \"Windows\""
+marker = "sys_platform == \"win32\""
 dependencies = [
     "winrt-runtime~=3.2.1.0",
 ]
@@ -2520,7 +2538,7 @@ version = "3.2.1"
 requires_python = ">=3.9"
 summary = "Python projection of Windows Runtime (WinRT) APIs"
 groups = ["ble"]
-marker = "platform_system == \"Windows\""
+marker = "sys_platform == \"win32\""
 dependencies = [
     "winrt-runtime~=3.2.1.0",
 ]
