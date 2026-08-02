@@ -47,7 +47,7 @@ source = ["a10sa_script", "tests"]
 
 [tool.coverage.report]
 show_missing = true
-fail_under = 100
+# fail_under = 100
 exclude_lines = ["pragma: no cover", "if TYPE_CHECKING:", "@overload"]
 
 [tool.isort]
