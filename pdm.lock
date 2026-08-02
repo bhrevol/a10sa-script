@@ -5,7 +5,7 @@
 groups = ["default", "ble", "coverage", "docs", "lint", "mypy", "safety", "tests", "typeguard", "xdoctest"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:28147ea36770e008f861541ee8526b1c8abaca2ffdea2a54b56920fb14ee5109"
+content_hash = "sha256:da7aa2e6059c6569a5cc1ac0685eb3f1c75611d03092f3075c404089f85a4deb"
 
 [[metadata.targets]]
 requires_python = "~=3.11"
@@ -165,30 +165,30 @@ files = [
 
 [[package]]
 name = "bleak"
-version = "2.1.1"
+version = "3.0.2"
 requires_python = ">=3.10"
 summary = "Bluetooth Low Energy platform Agnostic Klient"
 groups = ["ble"]
 dependencies = [
-    "async-timeout>=3.0.0; python_version < \"3.11\"",
-    "dbus-fast>=1.83.0; platform_system == \"Linux\"",
-    "pyobjc-core>=10.3; platform_system == \"Darwin\"",
-    "pyobjc-framework-CoreBluetooth>=10.3; platform_system == \"Darwin\"",
-    "pyobjc-framework-libdispatch>=10.3; platform_system == \"Darwin\"",
-    "typing-extensions>=4.7.0; python_version < \"3.12\"",
-    "winrt-Windows-Devices-Bluetooth-Advertisement>=3.1; platform_system == \"Windows\"",
-    "winrt-Windows-Devices-Bluetooth-GenericAttributeProfile>=3.1; platform_system == \"Windows\"",
-    "winrt-Windows-Devices-Bluetooth>=3.1; platform_system == \"Windows\"",
-    "winrt-Windows-Devices-Enumeration>=3.1; platform_system == \"Windows\"",
-    "winrt-Windows-Devices-Radios>=3.1; platform_system == \"Windows\"",
-    "winrt-Windows-Foundation-Collections>=3.1; platform_system == \"Windows\"",
-    "winrt-Windows-Foundation>=3.1; platform_system == \"Windows\"",
-    "winrt-Windows-Storage-Streams>=3.1; platform_system == \"Windows\"",
-    "winrt-runtime>=3.1; platform_system == \"Windows\"",
+    "async-timeout>=3.0.0; python_full_version < \"3.11\"",
+    "dbus-fast>=1.83.0; sys_platform == \"linux\"",
+    "pyobjc-core>=10.3; sys_platform == \"darwin\"",
+    "pyobjc-framework-corebluetooth>=10.3; sys_platform == \"darwin\"",
+    "pyobjc-framework-libdispatch>=10.3; sys_platform == \"darwin\"",
+    "typing-extensions>=4.7.0; python_full_version < \"3.12\"",
+    "winrt-runtime>=3.1; sys_platform == \"win32\"",
+    "winrt-windows-devices-bluetooth-advertisement>=3.1; sys_platform == \"win32\"",
+    "winrt-windows-devices-bluetooth-genericattributeprofile>=3.1; sys_platform == \"win32\"",
+    "winrt-windows-devices-bluetooth>=3.1; sys_platform == \"win32\"",
+    "winrt-windows-devices-enumeration>=3.1; sys_platform == \"win32\"",
+    "winrt-windows-devices-radios>=3.1; sys_platform == \"win32\"",
+    "winrt-windows-foundation-collections>=3.1; sys_platform == \"win32\"",
+    "winrt-windows-foundation>=3.1; sys_platform == \"win32\"",
+    "winrt-windows-storage-streams>=3.1; sys_platform == \"win32\"",
 ]
 files = [
-    {file = "bleak-2.1.1-py3-none-any.whl", hash = "sha256:61ac1925073b580c896a92a8c404088c5e5ec9dc3c5bd6fc17554a15779d83de"},
-    {file = "bleak-2.1.1.tar.gz", hash = "sha256:4600cc5852f2392ce886547e127623f188e689489c5946d422172adf80635cf9"},
+    {file = "bleak-3.0.2-py3-none-any.whl", hash = "sha256:39092feb9e83f1df5ad2f88e837723c7211c982ce9e9cda6235104bc2ebe0d0d"},
+    {file = "bleak-3.0.2.tar.gz", hash = "sha256:c2229cb8238d5876b4bd05c74bf7a1aea1f88da39d2e51ac9dfd5cc319d5265f"},
 ]
 
 [[package]]
@@ -661,7 +661,7 @@ version = "4.0.0"
 requires_python = ">=3.10"
 summary = "A faster version of dbus-next"
 groups = ["ble"]
-marker = "platform_system == \"Linux\""
+marker = "sys_platform == \"linux\""
 files = [
     {file = "dbus_fast-4.0.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:e65a68793ce650d94ac86021a473988715197762b24c72c510833e9111c5170d"},
     {file = "dbus_fast-4.0.0-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:512f25a0705903047e9b55d2bc3724f06dcbfb77e0b13f10a7eb835679d3705c"},
@@ -1392,7 +1392,7 @@ version = "12.1"
 requires_python = ">=3.10"
 summary = "Python<->ObjC Interoperability Module"
 groups = ["ble"]
-marker = "platform_system == \"Darwin\""
+marker = "sys_platform == \"darwin\""
 files = [
     {file = "pyobjc_core-12.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:c918ebca280925e7fcb14c5c43ce12dcb9574a33cccb889be7c8c17f3bcce8b6"},
     {file = "pyobjc_core-12.1-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:818bcc6723561f207e5b5453efe9703f34bc8781d11ce9b8be286bb415eb4962"},
@@ -1409,7 +1409,7 @@ version = "12.1"
 requires_python = ">=3.10"
 summary = "Wrappers for the Cocoa frameworks on macOS"
 groups = ["ble"]
-marker = "platform_system == \"Darwin\""
+marker = "sys_platform == \"darwin\""
 dependencies = [
     "pyobjc-core>=12.1",
 ]
@@ -1429,7 +1429,7 @@ version = "12.1"
 requires_python = ">=3.10"
 summary = "Wrappers for the framework CoreBluetooth on macOS"
 groups = ["ble"]
-marker = "platform_system == \"Darwin\""
+marker = "sys_platform == \"darwin\""
 dependencies = [
     "pyobjc-core>=12.1",
     "pyobjc-framework-Cocoa>=12.1",
@@ -1450,7 +1450,7 @@ version = "12.1"
 requires_python = ">=3.10"
 summary = "Wrappers for libdispatch on macOS"
 groups = ["ble"]
-marker = "platform_system == \"Darwin\""
+marker = "sys_platform == \"darwin\""
 dependencies = [
     "pyobjc-core>=12.1",
     "pyobjc-framework-Cocoa>=12.1",
@@ -2313,7 +2313,7 @@ version = "3.2.1"
 requires_python = ">=3.9"
 summary = "Python projection of Windows Runtime (WinRT) APIs"
 groups = ["ble"]
-marker = "platform_system == \"Windows\""
+marker = "sys_platform == \"win32\""
 dependencies = [
     "typing-extensions>=4.12.2",
 ]
@@ -2339,7 +2339,7 @@ version = "3.2.1"
 requires_python = ">=3.9"
 summary = "Python projection of Windows Runtime (WinRT) APIs"
 groups = ["ble"]
-marker = "platform_system == \"Windows\""
+marker = "sys_platform == \"win32\""
 dependencies = [
     "winrt-runtime~=3.2.1.0",
 ]
@@ -2365,7 +2365,7 @@ version = "3.2.1"
 requires_python = ">=3.9"
 summary = "Python projection of Windows Runtime (WinRT) APIs"
 groups = ["ble"]
-marker = "platform_system == \"Windows\""
+marker = "sys_platform == \"win32\""
 dependencies = [
     "winrt-runtime~=3.2.1.0",
 ]
@@ -2391,7 +2391,7 @@ version = "3.2.1"
 requires_python = ">=3.9"
 summary = "Python projection of Windows Runtime (WinRT) APIs"
 groups = ["ble"]
-marker = "platform_system == \"Windows\""
+marker = "sys_platform == \"win32\""
 dependencies = [
     "winrt-runtime~=3.2.1.0",
 ]
@@ -2417,7 +2417,7 @@ version = "3.2.1"
 requires_python = ">=3.9"
 summary = "Python projection of Windows Runtime (WinRT) APIs"
 groups = ["ble"]
-marker = "platform_system == \"Windows\""
+marker = "sys_platform == \"win32\""
 dependencies = [
     "winrt-runtime~=3.2.1.0",
 ]
@@ -2443,7 +2443,7 @@ version = "3.2.1"
 requires_python = ">=3.9"
 summary = "Python projection of Windows Runtime (WinRT) APIs"
 groups = ["ble"]
-marker = "platform_system == \"Windows\""
+marker = "sys_platform == \"win32\""
 dependencies = [
     "winrt-runtime~=3.2.1.0",
 ]
@@ -2469,7 +2469,7 @@ version = "3.2.1"
 requires_python = ">=3.9"
 summary = "Python projection of Windows Runtime (WinRT) APIs"
 groups = ["ble"]
-marker = "platform_system == \"Windows\""
+marker = "sys_platform == \"win32\""
 dependencies = [
     "winrt-runtime~=3.2.1.0",
 ]
@@ -2495,7 +2495,7 @@ version = "3.2.1"
 requires_python = ">=3.9"
 summary = "Python projection of Windows Runtime (WinRT) APIs"
 groups = ["ble"]
-marker = "platform_system == \"Windows\""
+marker = "sys_platform == \"win32\""
 dependencies = [
     "winrt-runtime~=3.2.1.0",
 ]
@@ -2521,7 +2521,7 @@ version = "3.2.1"
 requires_python = ">=3.9"
 summary = "Python projection of Windows Runtime (WinRT) APIs"
 groups = ["ble"]
-marker = "platform_system == \"Windows\""
+marker = "sys_platform == \"win32\""
 dependencies = [
     "winrt-runtime~=3.2.1.0",
 ]
