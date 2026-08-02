@@ -58,7 +58,7 @@ class VorzeScriptPlayer(ScriptPlayer[T]):
             detection_callback=self._detection_callback,
             service_uuids=[VORZE_SERVICE_UUID],
         )
-        scanner = await stack.enter_async_context(scanner)  # type: ignore[arg-type]
+        scanner = await stack.enter_async_context(scanner)
         logger.debug("Started scanning for Vorze BLE devices.")
         self._scan_stack = stack
 
